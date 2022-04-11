@@ -34,7 +34,6 @@ class $MODEL_NAME$Controller extends Controller
 
     public function __construct($MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repo, CustomFieldRepository $customFieldRepo $ADD_ATTR_PARAM$)
     {
-        parent::__construct();
         $this->$MODEL_NAME_CAMEL$Repository = $$MODEL_NAME_CAMEL$Repo;
         $this->customFieldRepository = $customFieldRepo;
         $ADD_ATTR_INIT$
@@ -60,12 +59,8 @@ class $MODEL_NAME$Controller extends Controller
     {
         $SELECT_RELATIONS$
         $SELECTED_RELATIONS_ADD$
-        $hasCustomField = in_array($this->$MODEL_NAME_CAMEL$Repository->model(),setting('custom_field_models',[]));
-            if($hasCustomField){
-                $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->$MODEL_NAME_CAMEL$Repository->model());
-                $html = generateCustomField($customFields);
-            }
-        return view('$VIEW_PREFIX$$MODEL_NAME_PLURAL_SNAKE$.create')->with("customFields", isset($html) ? $html : false)$SELECT_RELATIONS_PARAM$;
+        
+        return view('$VIEW_PREFIX$$MODEL_NAME_PLURAL_SNAKE$.create')$SELECT_RELATIONS_PARAM$;
     }
 
     /**
@@ -78,16 +73,15 @@ class $MODEL_NAME$Controller extends Controller
     public function store(Create$MODEL_NAME$Request $request)
     {
         $input = $request->all();
-        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->$MODEL_NAME_CAMEL$Repository->model());
+        
         try {
             $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->create($input);
-            $$MODEL_NAME_CAMEL$->customFieldsValues()->createMany(getCustomFieldsValues($customFields,$request));
             $MEDIA_COLUMNS$
         } catch (ValidatorException $e) {
             Flash::error($e->getMessage());
         }
 
-        Flash::success(__('lang.saved_successfully',['operator' => __('lang.$MODEL_NAME_SNAKE$')]));
+        Flash::success(__('messages.saved', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
 
         return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
     }
@@ -104,7 +98,7 @@ class $MODEL_NAME$Controller extends Controller
         $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->findWithoutFail($id);
 
         if (empty($$MODEL_NAME_CAMEL$)) {
-            Flash::error(__('lang.not_found',['operator' => __('lang.$MODEL_NAME_SNAKE$')]));
+            Flash::error(__('messages.not_found', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
             return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
         }
         return view('$VIEW_PREFIX$$MODEL_NAME_PLURAL_SNAKE$.show')->with('$MODEL_NAME_CAMEL$', $$MODEL_NAME_CAMEL$);
@@ -124,17 +118,12 @@ class $MODEL_NAME$Controller extends Controller
         $SELECTED_RELATIONS_EDIT$
 
         if (empty($$MODEL_NAME_CAMEL$)) {
-            Flash::error(__('lang.not_found',['operator' => __('lang.$MODEL_NAME_SNAKE$')]));
+            Flash::error(__('messages.not_found', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
 
             return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
         }
-        $customFieldsValues = $$MODEL_NAME_CAMEL$->customFieldsValues()->with('customField')->get();
-        $customFields =  $this->customFieldRepository->findByField('custom_field_model', $this->$MODEL_NAME_CAMEL$Repository->model());
-        $hasCustomField = in_array($this->$MODEL_NAME_CAMEL$Repository->model(),setting('custom_field_models',[]));
-        if($hasCustomField) {
-            $html = generateCustomField($customFields, $customFieldsValues);
-        }
-        return view('$VIEW_PREFIX$$MODEL_NAME_PLURAL_SNAKE$.edit')->with('$MODEL_NAME_CAMEL$', $$MODEL_NAME_CAMEL$)->with("customFields", isset($html) ? $html : false)$SELECT_RELATIONS_PARAM$;
+       
+        return view('$VIEW_PREFIX$$MODEL_NAME_PLURAL_SNAKE$.edit')->with('$MODEL_NAME_CAMEL$', $$MODEL_NAME_CAMEL$)$SELECT_RELATIONS_PARAM$;
     }
 
     /**
@@ -150,23 +139,20 @@ class $MODEL_NAME$Controller extends Controller
         $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->findWithoutFail($id);
 
         if (empty($$MODEL_NAME_CAMEL$)) {
-            Flash::error(__('lang.not_found',['operator' => __('lang.$MODEL_NAME_SNAKE$')]));
+            Flash::error(__('messages.not_found', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
             return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
         }
         $input = $request->all();
-        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->$MODEL_NAME_CAMEL$Repository->model());
+
         try {
             $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->update($input, $id);
             $SELECTS_RELATIONS_UPDATE$
             $MEDIA_COLUMNS$
-            foreach (getCustomFieldsValues($customFields, $request) as $value){
-                $$MODEL_NAME_CAMEL$->customFieldsValues()
-                    ->updateOrCreate(['custom_field_id'=>$value['custom_field_id']],$value);
-            }
         } catch (ValidatorException $e) {
             Flash::error($e->getMessage());
         }
-        Flash::success(__('lang.updated_successfully',['operator' => __('lang.$MODEL_NAME_SNAKE$')]));
+
+        Flash::success(__('messages.updated', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
         return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
     }
 
@@ -182,14 +168,14 @@ class $MODEL_NAME$Controller extends Controller
         $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->findWithoutFail($id);
 
         if (empty($$MODEL_NAME_CAMEL$)) {
-            Flash::error(__('lang.not_found',['operator' => __('lang.$MODEL_NAME_SNAKE$')]));
+            Flash::error(__('messages.not_found', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
 
             return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
         }
 
         $this->$MODEL_NAME_CAMEL$Repository->delete($id);
 
-        Flash::success(__('lang.deleted_successfully',['operator' => __('lang.$MODEL_NAME_SNAKE$')]));
+        Flash::success(__('messages.deleted', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
         return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
     }
 
