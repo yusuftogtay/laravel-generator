@@ -33,17 +33,27 @@ return [
 
         'api_controller'    => app_path('Http/Controllers/API/'),
 
+        'api_resource'      => app_path('Http/Resources/'),
+
         'test_trait'        => base_path('tests/traits/'),
 
         'repository_test'   => base_path('tests/'),
 
         'api_test'          => base_path('tests/'),
 
+        'tests'             => base_path('tests/'),
+
         'views'             => base_path('resources/views/'),
 
         'schema_files'      => base_path('resources/model_schemas/'),
 
         'templates_dir'     => base_path('resources/infyom/infyom-generator-templates/'),
+
+        'seeder'            => database_path('seeders/'),
+
+        'database_seeder'   => database_path('seeders/DatabaseSeeder.php'),
+
+        'factory'           => database_path('factories/'),
 
         'modelJs'           => base_path('resources/assets/js/models/'),
     ],
@@ -67,9 +77,21 @@ return [
 
         'api_controller'    => 'App\Http\Controllers\API',
 
+        'api_resource'      => 'App\Http\Resources',
+
         'request'           => 'App\Http\Requests',
 
         'api_request'       => 'App\Http\Requests\API',
+
+        'seeder'            => 'Database\Seeders',
+
+        'factory'           => 'Database\Factories',
+
+        'repository_test'   => 'Tests\Repositories',
+
+        'api_test'          => 'Tests\APIs',
+
+        'tests'             => 'Tests',
     ],
 
     /*
@@ -110,9 +132,19 @@ return [
 
     'options' => [
 
-        'softDelete' => false,
+        'softDelete' => true,
 
-        'tables_searchable_default' => false,
+        'save_schema_file' => true,
+
+        'localized' => true,
+
+        'tables_searchable_default' => true,
+
+        'repository_pattern' => true,
+
+        'resources' => true,
+
+        'excluded_fields' => ['id'],
     ],
 
     /*
@@ -142,7 +174,7 @@ return [
 
     'add_on' => [
 
-        'swagger'       => false,
+        'swagger'       => true,
 
         'tests'         => true,
 
@@ -182,4 +214,14 @@ return [
     */
     'ignore_model_prefix' => false,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Specify custom doctrine mappings as per your need
+    |--------------------------------------------------------------------------
+    |
+    */
+    'from_table' => [
+
+        'doctrine_mappings' => [],
+    ],
 ];

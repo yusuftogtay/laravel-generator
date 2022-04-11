@@ -2,12 +2,14 @@
 
 namespace InfyOm\Generator\Generators;
 
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use InfyOm\Generator\Common\CommandData;
-use InfyOm\Generator\Common\GeneratorFieldRelation;
+use Illuminate\Support\Facades\Log;
 use InfyOm\Generator\Utils\FileUtil;
+use InfyOm\Generator\Common\CommandData;
+use InfyOm\Generator\Generators\BaseGenerator;
 use InfyOm\Generator\Utils\TableFieldsGenerator;
+use InfyOm\Generator\Generators\SwaggerGenerator;
+use InfyOm\Generator\Common\GeneratorFieldRelation;
 
 class ModelGenerator extends BaseGenerator
 {
@@ -38,7 +40,7 @@ class ModelGenerator extends BaseGenerator
     {
         $this->commandData = $commandData;
         $this->path = $commandData->config->pathModel;
-        $this->fileName = $this->commandData->modelName.'.php';
+        $this->fileName = $this->commandData->modelName . '.php';
         $this->table = $this->commandData->dynamicVars['$TABLE_NAME$'];
     }
 
@@ -56,20 +58,19 @@ class ModelGenerator extends BaseGenerator
                 $hasMedia = true;
             }
             /*Multiple select generation*/
-            if($field->dbInput === 'hidden,mtm'){
+            if ($field->dbInput === 'hidden,mtm') {
 
                 $relationshipAttributes[] = fill_template([
                     '$RELATION_MODEL_PLURAL$' => $field->name,
                     '$RELATION_MODEL_PLURAL_CAPITAL$' => ucfirst($field->name),
                     '$RELATION_MODEL_TITLE$' => preg_split('/\./', $field->title)[1],
                 ], $relationshipAttributeTemplate);
-
             }
         }
 
-        if($hasMedia) {
+        if ($hasMedia) {
             $templateData = get_template('model.upload_image_model', 'laravel-generator');
-        }else{
+        } else {
             $templateData = get_template('model.model', 'laravel-generator');
         }
         $relationshipAttributes = implode('' . infy_nl_tab(1, 4), $relationshipAttributes);
@@ -93,10 +94,10 @@ class ModelGenerator extends BaseGenerator
 
         foreach ($this->commandData->fields as $field) {
             if ($field->isFillable) {
-                $fillables[] = "'".$field->name."'";
+                $fillables[] = "'" . $field->name . "'";
             }
-            if($field->dbInput === 'hidden,mtm'){
-                $appends[] = "'".$field->name."'";
+            if ($field->dbInput === 'hidden,mtm') {
+                $appends[] = "'" . $field->name . "'";
             }
         }
 
@@ -105,23 +106,23 @@ class ModelGenerator extends BaseGenerator
         $templateData = $this->fillTimestamps($templateData);
 
         if ($this->commandData->getOption('primary')) {
-            $primary = infy_tab()."protected \$primaryKey = '".$this->commandData->getOption('primary')."';\n";
+            $primary = infy_tab() . "protected \$primaryKey = '" . $this->commandData->getOption('primary') . "';\n";
         } else {
             $primary = '';
         }
 
         $templateData = str_replace('$PRIMARY$', $primary, $templateData);
 
-        $templateData = str_replace('$FIELDS$', implode(','.infy_nl_tab(1, 2), $fillables), $templateData);
-        $templateData = str_replace('$APPENDS$', implode(','.infy_nl_tab(1, 2), $appends), $templateData);
+        $templateData = str_replace('$FIELDS$', implode(',' . infy_nl_tab(1, 2), $fillables), $templateData);
+        $templateData = str_replace('$APPENDS$', implode(',' . infy_nl_tab(1, 2), $appends), $templateData);
 
-        $templateData = str_replace('$RULES$', implode(','.infy_nl_tab(1, 2), $this->generateRules()), $templateData);
+        $templateData = str_replace('$RULES$', implode(',' . infy_nl_tab(1, 2), $this->generateRules()), $templateData);
 
-        $templateData = str_replace('$CAST$', implode(','.infy_nl_tab(1, 2), $this->generateCasts()), $templateData);
+        $templateData = str_replace('$CAST$', implode(',' . infy_nl_tab(1, 2), $this->generateCasts()), $templateData);
 
         $templateData = str_replace(
             '$RELATIONS$',
-            fill_template($this->commandData->dynamicVars, implode(PHP_EOL.infy_nl_tab(1, 1), $this->generateRelations())),
+            fill_template($this->commandData->dynamicVars, implode(PHP_EOL . infy_nl_tab(1, 1), $this->generateRelations())),
             $templateData
         );
 
@@ -138,13 +139,15 @@ class ModelGenerator extends BaseGenerator
             $templateData = str_replace('$SOFT_DELETE_DATES$', '', $templateData);
         } else {
             $templateData = str_replace(
-                '$SOFT_DELETE_IMPORT$', "use Illuminate\\Database\\Eloquent\\SoftDeletes;\n",
+                '$SOFT_DELETE_IMPORT$',
+                "use Illuminate\\Database\\Eloquent\\SoftDeletes;\n",
                 $templateData
             );
-            $templateData = str_replace('$SOFT_DELETE$', infy_tab()."use SoftDeletes;\n", $templateData);
+            $templateData = str_replace('$SOFT_DELETE$', infy_tab() . "use SoftDeletes;\n", $templateData);
             $deletedAtTimestamp = config('infyom.laravel_generator.timestamps.deleted_at', 'deleted_at');
             $templateData = str_replace(
-                '$SOFT_DELETE_DATES$', infy_nl_tab()."protected \$dates = ['".$deletedAtTimestamp."'];\n",
+                '$SOFT_DELETE_DATES$',
+                infy_nl_tab() . "protected \$dates = ['" . $deletedAtTimestamp . "'];\n",
                 $templateData
             );
         }
@@ -162,11 +165,11 @@ class ModelGenerator extends BaseGenerator
 
             $fillables = '';
             foreach ($this->commandData->relations as $relation) {
-                $fillables .= ' * @property '.$this->getPHPDocType($relation->type, $relation).PHP_EOL;
+                $fillables .= ' * @property ' . $this->getPHPDocType($relation->type, $relation) . PHP_EOL;
             }
             foreach ($this->commandData->fields as $field) {
                 if ($field->isFillable) {
-                    $fillables .= ' * @property '.$this->getPHPDocType($field->fieldType).' '.$field->name.PHP_EOL;
+                    $fillables .= ' * @property ' . $this->getPHPDocType($field->fieldType) . ' ' . $field->name . PHP_EOL;
                 }
             }
             $docsTemplate = str_replace('$GENERATE_DATE$', date('F j, Y, g:i a T'), $docsTemplate);
@@ -193,12 +196,12 @@ class ModelGenerator extends BaseGenerator
                 return 'string';
             case '1t1':
             case 'mt1':
-                return '\\'.$this->commandData->config->nsModel.'\\'.$relation->inputs[0].' '.Str::camel($relation->inputs[0]);
+                return '\\' . $this->commandData->config->nsModel . '\\' . $relation->inputs[0] . ' ' . Str::camel($relation->inputs[0]);
             case '1tm':
-                return '\Illuminate\Database\Eloquent\Collection'.' '.$relation->inputs[0];
+                return '\Illuminate\Database\Eloquent\Collection' . ' ' . $relation->inputs[0];
             case 'mtm':
             case 'hmt':
-                return '\Illuminate\Database\Eloquent\Collection'.' '.Str::camel($relation->inputs[0]);
+                return '\Illuminate\Database\Eloquent\Collection' . ' ' . Str::camel($relation->inputs[0]);
             default:
                 return $db_type;
         }
@@ -212,8 +215,11 @@ class ModelGenerator extends BaseGenerator
 
         $template = fill_template($this->commandData->dynamicVars, $template);
 
-        $template = str_replace('$REQUIRED_FIELDS$',
-            '"'.implode('"'.', '.'"', $this->generateRequiredFields()).'"', $template);
+        $template = str_replace(
+            '$REQUIRED_FIELDS$',
+            '"' . implode('"' . ', ' . '"', $this->generateRequiredFields()) . '"',
+            $template
+        );
 
         $propertyTemplate = get_template('model_docs.property', 'swagger-generator');
 
@@ -249,14 +255,14 @@ class ModelGenerator extends BaseGenerator
 
         if ($this->commandData->getOption('fromTable')) {
             if (empty($timestamps)) {
-                $replace = infy_nl_tab()."public \$timestamps = false;\n";
+                $replace = infy_nl_tab() . "public \$timestamps = false;\n";
             } else {
                 list($created_at, $updated_at) = collect($timestamps)->map(function ($field) {
                     return !empty($field) ? "'$field'" : 'null';
                 });
 
-                $replace .= infy_nl_tab()."const CREATED_AT = $created_at;";
-                $replace .= infy_nl_tab()."const UPDATED_AT = $updated_at;\n";
+                $replace .= infy_nl_tab() . "const CREATED_AT = $created_at;";
+                $replace .= infy_nl_tab() . "const UPDATED_AT = $updated_at;\n";
             }
         }
 
@@ -269,7 +275,7 @@ class ModelGenerator extends BaseGenerator
 
         foreach ($this->commandData->fields as $field) {
             if (!empty($field->validations)) {
-                $rule = "'".$field->name."' => '".$field->validations."'";
+                $rule = "'" . $field->name . "' => '" . $field->validations . "'";
                 $rules[] = $rule;
             }
         }
@@ -288,7 +294,7 @@ class ModelGenerator extends BaseGenerator
                 continue;
             }
 
-            $rule = "'".$field->name."' => ";
+            $rule = "'" . $field->name . "' => ";
 
             switch ($field->fieldType) {
                 case 'integer':
@@ -332,7 +338,7 @@ class ModelGenerator extends BaseGenerator
     private function generateRelations()
     {
         $relations = [];
-Log::alert($this->commandData->relations);
+        Log::alert($this->commandData->relations);
         foreach ($this->commandData->relations as $relation) {
             $relationText = $relation->getRelationFunctionText();
 
@@ -347,7 +353,7 @@ Log::alert($this->commandData->relations);
     public function rollback()
     {
         if ($this->rollbackFile($this->path, $this->fileName)) {
-            $this->commandData->commandComment('Model file deleted: '.$this->fileName);
+            $this->commandData->commandComment('Model file deleted: ' . $this->fileName);
         }
     }
 }

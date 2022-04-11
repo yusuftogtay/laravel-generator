@@ -5,11 +5,13 @@ namespace InfyOm\Generator\Commands;
 use Illuminate\Console\Command;
 use InfyOm\Generator\Common\CommandData;
 use InfyOm\Generator\Generators\API\APIControllerGenerator;
+use InfyOm\Generator\Generators\API\APIResourceGenerator;
 use InfyOm\Generator\Generators\API\APIRequestGenerator;
 use InfyOm\Generator\Generators\API\APIRoutesGenerator;
 use InfyOm\Generator\Generators\API\APITestGenerator;
 use InfyOm\Generator\Generators\MigrationGenerator;
 use InfyOm\Generator\Generators\ModelGenerator;
+use InfyOm\Generator\Generators\FactoryGenerator;
 use InfyOm\Generator\Generators\RepositoryGenerator;
 use InfyOm\Generator\Generators\RepositoryTestGenerator;
 use InfyOm\Generator\Generators\Scaffold\ControllerGenerator;
@@ -19,6 +21,7 @@ use InfyOm\Generator\Generators\Scaffold\RoutesGenerator;
 use InfyOm\Generator\Generators\Scaffold\ViewGenerator;
 use InfyOm\Generator\Generators\TestTraitGenerator;
 use InfyOm\Generator\Utils\FileUtil;
+use InfyOm\Generator\Generators\SeederGenerator;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -66,9 +69,20 @@ class BaseCommand extends Command
             $modelGenerator->generate();
         }
 
-        if (!$this->isSkip('repository')) {
+        if (!$this->isSkip('repository') && $this->commandData->getOption('repositoryPattern')) {
             $repositoryGenerator = new RepositoryGenerator($this->commandData);
             $repositoryGenerator->generate();
+        }
+
+        if ($this->commandData->getOption('factory') || (!$this->isSkip('tests') and $this->commandData->getAddOn('tests')
+        )) {
+            $factoryGenerator = new FactoryGenerator($this->commandData);
+            $factoryGenerator->generate();
+        }
+
+        if ($this->commandData->getOption('seeder')) {
+            $seederGenerator = new SeederGenerator($this->commandData);
+            $seederGenerator->generate();
         }
     }
 
@@ -98,6 +112,11 @@ class BaseCommand extends Command
 
             $apiTestGenerator = new APITestGenerator($this->commandData);
             $apiTestGenerator->generate();
+        }
+
+        if ($this->commandData->getOption('resources')) {
+            $apiResourceGenerator = new APIResourceGenerator($this->commandData);
+            $apiResourceGenerator->generate();
         }
     }
 
@@ -142,14 +161,19 @@ class BaseCommand extends Command
                 if ($this->commandData->getOption('jsonFromGUI')) {
                     $this->call('migrate');
                 } elseif ($this->commandData->getOption('migrate')) {
-                        $this->call('migrate');
-                }else{
+                    $this->call('migrate');
+                } else {
                     if ($this->confirm("\nDo you want to migrate database? [y|N]", false)) {
                         $this->call('migrate');
                     }
                 }
             }
         }
+
+        if ($this->commandData->getOption('localized')) {
+            $this->saveLocaleFile();
+        }
+
         if (!$this->isSkip('dump-autoload') && !$this->commandData->getOption('migrate')) {
             $this->info('Generating autoload files');
             $this->composer->dumpOptimized();
@@ -191,19 +215,44 @@ class BaseCommand extends Command
         foreach ($this->commandData->relations as $relation) {
             $fileFields[] = [
                 'type'     => 'relation',
-                'relation' => $relation->type.','.implode(',', $relation->inputs),
+                'relation' => $relation->type . ',' . implode(',', $relation->inputs),
             ];
         }
 
         $path = config('infyom.laravel_generator.path.schema_files', base_path('resources/model_schemas/'));
 
-        $fileName = $this->commandData->modelName.'.json';
+        $fileName = $this->commandData->modelName . '.json';
 
-        if (file_exists($path.$fileName) && !$this->confirmOverwrite($fileName)) {
+        if (file_exists($path . $fileName) && !$this->confirmOverwrite($fileName)) {
             return;
         }
         FileUtil::createFile($path, $fileName, json_encode($fileFields, JSON_PRETTY_PRINT));
         $this->commandData->commandComment("\nSchema File saved: ");
+        $this->commandData->commandInfo($fileName);
+    }
+
+    private function saveLocaleFile()
+    {
+        $locales = [
+            'singular' => $this->commandData->modelName,
+            'plural'   => $this->commandData->config->mPlural,
+            'fields'   => [],
+        ];
+
+        foreach ($this->commandData->fields as $field) {
+            $locales['fields'][$field->name] = Str::title(str_replace('_', ' ', $field->name));
+        }
+
+        $path = config('infyom.laravel_generator.path.models_locale_files', base_path('resources/lang/en/models/'));
+
+        $fileName = $this->commandData->config->mCamelPlural . '.php';
+
+        if (file_exists($path . $fileName) && !$this->confirmOverwrite($fileName)) {
+            return;
+        }
+        $content = "<?php\n\nreturn " . var_export($locales, true) . ';' . \PHP_EOL;
+        FileUtil::createFile($path, $fileName, $content);
+        $this->commandData->commandComment("\nModel Locale File saved: ");
         $this->commandData->commandInfo($fileName);
     }
 
@@ -216,7 +265,7 @@ class BaseCommand extends Command
     protected function confirmOverwrite($fileName, $prompt = '')
     {
         $prompt = (empty($prompt))
-            ? $fileName.' already exists. Do you want to overwrite it? [y|N]'
+            ? $fileName . ' already exists. Do you want to overwrite it? [y|N]'
             : $prompt;
 
         return $this->confirm($prompt, false);
@@ -231,9 +280,11 @@ class BaseCommand extends Command
     {
         return [
             ['fieldsFile', null, InputOption::VALUE_REQUIRED, 'Fields input as json file'],
+            ['plural', null, InputOption::VALUE_REQUIRED, 'Plural Model name'],
             ['jsonFromGUI', null, InputOption::VALUE_REQUIRED, 'Direct Json string while using GUI interface'],
             ['tableName', null, InputOption::VALUE_REQUIRED, 'Table Name'],
             ['fromTable', null, InputOption::VALUE_NONE, 'Generate from existing table'],
+            ['ignoreFields', null, InputOption::VALUE_REQUIRED, 'Ignore fields while generating from table'],
             ['save', null, InputOption::VALUE_NONE, 'Save model schema to file'],
             ['primary', null, InputOption::VALUE_REQUIRED, 'Custom primary key'],
             ['prefix', null, InputOption::VALUE_REQUIRED, 'Prefix for all files'],
@@ -242,7 +293,15 @@ class BaseCommand extends Command
             ['datatables', null, InputOption::VALUE_REQUIRED, 'Override datatables settings'],
             ['views', null, InputOption::VALUE_REQUIRED, 'Specify only the views you want generated: index,create,edit,show'],
             ['relations', null, InputOption::VALUE_NONE, 'Specify if you want to pass relationships for fields'],
+            ['softDelete', null, InputOption::VALUE_NONE, 'Soft Delete Option'],
             ['media', null, InputOption::VALUE_NONE, 'Specify if model has media upload files'],
+            ['forceMigrate', null, InputOption::VALUE_NONE, 'Specify if you want to run migration or not'],
+            ['factory', null, InputOption::VALUE_NONE, 'To generate factory'],
+            ['seeder', null, InputOption::VALUE_NONE, 'To generate seeder'],
+            ['localized', null, InputOption::VALUE_NONE, 'Localize files.'],
+            ['repositoryPattern', null, InputOption::VALUE_REQUIRED, 'Repository Pattern'],
+            ['resources', null, InputOption::VALUE_REQUIRED, 'Resources'],
+            ['connection', null, InputOption::VALUE_REQUIRED, 'Specify connection name'],
             ['migrate', null, InputOption::VALUE_NONE, 'Specify if auto migrate database or not'],
 
         ];
