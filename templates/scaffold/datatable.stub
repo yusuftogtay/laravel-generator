@@ -60,14 +60,42 @@ class $MODEL_NAME$DataTable extends DataTable
         return $this->builder()
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->addAction(['width' => '80px', 'printable' => false ,'responsivePriority'=>'100'])
-            ->parameters(array_merge(
-                config('datatables-buttons.parameters'), [
-                    'language' => json_decode(
-                        file_get_contents(base_path('resources/lang/'.app()->getLocale().'/datatable.json')
-                        ),true)
-                ]
-            ));
+            ->addAction(['width' => '80px', 'printable' => false ,'responsivePriority'=>'100', 'title' => __('crud.action')])
+            ->parameters([
+                'dom'       => 'Bfrtip',
+                'stateSave' => true,
+                'order'     => [[0, 'desc']],
+                'buttons'   => [
+                    [
+                       'extend' => 'create',
+                       'className' => 'btn btn-default btn-sm no-corner',
+                       'text' => '<i class="fa fa-plus"></i> ' .__('auth.app.create').''
+                    ],
+                    [
+                       'extend' => 'export',
+                       'className' => 'btn btn-default btn-sm no-corner',
+                       'text' => '<i class="fa fa-download"></i> ' .__('auth.app.export').''
+                    ],
+                    [
+                       'extend' => 'print',
+                       'className' => 'btn btn-default btn-sm no-corner',
+                       'text' => '<i class="fa fa-print"></i> ' .__('auth.app.print').''
+                    ],
+                    [
+                       'extend' => 'reset',
+                       'className' => 'btn btn-default btn-sm no-corner',
+                       'text' => '<i class="fa fa-undo"></i> ' .__('auth.app.reset').''
+                    ],
+                    [
+                       'extend' => 'reload',
+                       'className' => 'btn btn-default btn-sm no-corner',
+                       'text' => '<i class="fa fa-refresh"></i> ' .__('auth.app.reload').''
+                    ],
+                ],
+                 'language' => [
+                   'url' => url('//cdn.datatables.net/plug-ins/1.10.12/i18n/Turkish.json'),
+                 ],
+            ]);
     }
 
     /**
@@ -80,19 +108,6 @@ class $MODEL_NAME$DataTable extends DataTable
         $columns = [
             $DATATABLE_COLUMNS$
             ];
-
-        $hasCustomField = in_array($MODEL_NAME$::class, setting('custom_field_models',[]));
-        if ($hasCustomField) {
-            $customFieldsCollection = CustomField::where('custom_field_model', $MODEL_NAME$::class)->where('in_table', '=', true)->get();
-            foreach ($customFieldsCollection as $key => $field) {
-                array_splice($columns, $field->order - 1, 0, [[
-                    'data' => 'custom_fields.' . $field->name . '.view',
-                    'title' => trans('lang.$MODEL_NAME_SNAKE$_' . $field->name),
-                    'orderable' => false,
-                    'searchable' => false,
-                ]]);
-            }
-        }
         return $columns;
     }
 

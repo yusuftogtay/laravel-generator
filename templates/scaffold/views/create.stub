@@ -12,15 +12,15 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-md-6">
-                <h1 class="m-0 text-bold">{{trans('lang.$MODEL_NAME_SNAKE$_plural')}} <small class="mx-3">|</small><small>{{trans('lang.$MODEL_NAME_SNAKE$_desc')}}</small></h1>
+                <h1 class="m-0 text-bold">{{__('models/$MODEL_NAME_SNAKE$.plural')}} <small class="mx-3">|</small><small>{{__('models/$MODEL_NAME_SNAKE$.description')}}</small></h1>
             </div><!-- /.col -->
             <div class="col-md-6">
                 <ol class="breadcrumb bg-white float-sm-right rounded-pill px-4 py-2 d-none d-md-flex">
-                    <li class="breadcrumb-item"><a href="{{url('/dashboard')}}"><i class="fas fa-tachometer-alt mx-1"></i> {{trans('lang.dashboard')}}</a></li>
+                    <li class="breadcrumb-item"><a href="{{url('/dashboard')}}"><i class="fas fa-tachometer-alt mx-1"></i> {{__('crud.dashboard')}}</a></li>
                     <li class="breadcrumb-item">
-                        <a href="{!! route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index') !!}">{{trans('lang.$MODEL_NAME_SNAKE$_plural')}}</a>
+                        <a href="{!! route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index') !!}">{{__('models/$MODEL_NAME_SNAKE$.singular')}}</a>
                     </li>
-                    <li class="breadcrumb-item active">{{trans('lang.$MODEL_NAME_SNAKE$_create')}}</li>
+                    <li class="breadcrumb-item active">{{__('models/$MODEL_NAME_SNAKE$.create')}}</li>
                 </ol>
             </div><!-- /.col -->
         </div><!-- /.row -->
@@ -37,11 +37,11 @@
       <ul class="nav nav-tabs d-flex flex-row align-items-start card-header-tabs">
         @can('$MODEL_NAME_PLURAL_CAMEL$.index')
         <li class="nav-item">
-          <a class="nav-link" href="{!! route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index') !!}"><i class="fas fa-list mr-2"></i>{{trans('lang.$MODEL_NAME_SNAKE$_table')}}</a>
+          <a class="nav-link" href="{!! route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index') !!}"><i class="fas fa-list mr-2"></i>{{ __('models/$MODEL_NAME_SNAKE$.table') }}</a>
         </li>
         @endcan
         <li class="nav-item">
-          <a class="nav-link active" href="{!! url()->current() !!}"><i class="fas fa-plus mr-2"></i>{{trans('lang.$MODEL_NAME_SNAKE$_create')}}</a>
+          <a class="nav-link active" href="{!! url()->current() !!}"><i class="fas fa-plus mr-2"></i>{{__('models/$MODEL_NAME_SNAKE$.create')}}</a>
         </li>
       </ul>
     </div>
