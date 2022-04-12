@@ -25,6 +25,8 @@ class GeneratorConfig
     public $pathRepository;
     public $pathModel;
     public $pathDataTables;
+    public $pathSeeder;
+    public $pathFactory;
 
     public $pathApiController;
     public $pathApiRequest;
@@ -157,6 +159,10 @@ class GeneratorConfig
             'infyom.laravel_generator.path.repository',
             app_path('Repositories/')
         ).$prefix;
+
+        $this->pathFactory = config('infyom.laravel_generator.path.factory', database_path('factories/')).$prefix;
+
+        $this->pathSeeder = config('infyom.laravel_generator.path.seeder', database_path('seeders/')).$prefix;
 
         $this->pathModel = config('infyom.laravel_generator.path.model', app_path('Models/')).$prefix;
         if (config('infyom.laravel_generator.ignore_model_prefix', false)) {
