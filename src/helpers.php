@@ -231,7 +231,7 @@ if (!function_exists('model_name_from_table_name')) {
      */
     function model_name_from_table_name($tableName)
     {
-        return ucfirst(Str::camel(str_singular($tableName)));
+        return ucfirst(Str::camel(Str::singular($tableName)));
     }
 }
 if (!function_exists('get_relation')) {
