@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Str;
 
 if (!function_exists('infy_tab')) {
@@ -172,33 +173,53 @@ if (!function_exists('fill_template_with_field_data')) {
     function fill_template_with_field_data($variables, $fieldVariables, $template, $field)
     {
 
-        if(!$field->isSearchable){
-            $template = str_replace('$SEARCHABLE$',"'searchable'=>false,", $template);
-        }else{
-            $template = preg_replace('/\$SEARCHABLE\$/','',$template);
+        if (!$field->isSearchable) {
+            $template = str_replace('$SEARCHABLE$', "'searchable'=>false,", $template);
+        } else {
+            $template = preg_replace('/\$SEARCHABLE\$/', '', $template);
         }
 
-        if( !$field->isOrderable){
-            $template = str_replace('$ORDRERABLE$',"'orderable'=>false,", $template);
-        }else{
-            $template = preg_replace('/\$ORDRERABLE\$/','',$template);
+        if (!$field->isOrderable) {
+            $template = str_replace('$ORDRERABLE$', "'orderable'=>false,", $template);
+        } else {
+            $template = preg_replace('/\$ORDRERABLE\$/', '', $template);
         }
 
-        if( !$field->isExportable){
-            $template = str_replace('$EXPORTABLE$',"'exportable'=>false,", $template);
-        }else{
-            $template = preg_replace('/\$EXPORTABLE\$/','',$template);
+        if (!$field->isExportable) {
+            $template = str_replace('$EXPORTABLE$', "'exportable'=>false,", $template);
+        } else {
+            $template = preg_replace('/\$EXPORTABLE\$/', '', $template);
         }
 
-        if( !$field->isPrintable){
-            $template = str_replace('$PRINTABLE$',"'printable'=>false,", $template);
-        }else{
-            $template = preg_replace('/\$PRINTABLE\$/','',$template);
+        if (!$field->isPrintable) {
+            $template = str_replace('$PRINTABLE$', "'printable'=>false,", $template);
+        } else {
+            $template = preg_replace('/\$PRINTABLE\$/', '', $template);
         }
 
         $template = fill_template($variables, $template);
 
         return fill_field_template($fieldVariables, $template, $field);
+    }
+}
+
+if (!function_exists('fill_template_with_field_data_locale')) {
+    /**
+     * fill template with field data.
+     *
+     * @param array          $variables
+     * @param array          $fieldVariables
+     * @param string         $template
+     * @param GeneratorField $field
+     *
+     * @return string
+     */
+    function fill_template_with_field_data_locale($variables, $fieldVariables, $template, $field)
+    {
+        $template = fill_template($variables, $template);
+        $modelName = $variables['$MODEL_NAME_PLURAL_CAMEL$'];
+
+        return fill_field_template_locale($fieldVariables, $template, $field, $modelName);
     }
 }
 
@@ -221,6 +242,28 @@ if (!function_exists('fill_template_with_field_data')) {
 //    }
 //}
 
+if (!function_exists('fill_field_template_locale')) {
+    /**
+     * fill field template with variable values.
+     *
+     * @param array          $variables
+     * @param string         $template
+     * @param GeneratorField $field
+     * @param string         $modelName
+     *
+     * @return string
+     */
+    function fill_field_template_locale($variables, $template, $field, $modelName)
+    {
+        foreach ($variables as $variable => $key) {
+            $value = $field->name;
+            $template = str_replace($variable, "@lang('models/$modelName.fields.$value')", $template);
+        }
+
+        return $template;
+    }
+}
+
 if (!function_exists('model_name_from_table_name')) {
     /**
      * generates model name from table name.
@@ -242,9 +285,9 @@ if (!function_exists('get_relation')) {
      */
     function get_relation($field, $for = 'eloquent')
     {
-        if($for === 'eloquent'){
+        if ($for === 'eloquent') {
             $relation = '->with("${MODEL}")';
-        }elseif($for === 'view'){
+        } elseif ($for === 'view') {
             $relation = '->with("${MODEL}",$${MODEL})';
         }
         $model = Str::camel(preg_split('/\./', $field->title)[0]);
@@ -297,18 +340,17 @@ function fill_add_repositories_template($fieldNames, $templateData, $templateTyp
     }
 
 
-    $fields = implode(''.infy_nl_tab(1, 4), $addUsedRepository);
+    $fields = implode('' . infy_nl_tab(1, 4), $addUsedRepository);
     $templateData = str_replace('$ADD_USED$', $fields, $templateData);
 
     $fields = implode('', $addAttrRepository);
     $templateData = str_replace('$ADD_ATTR$', $fields, $templateData);
 
-    $fields = implode(''.infy_nl_tab(1, 4), $addAttrParamRepository);
+    $fields = implode('' . infy_nl_tab(1, 4), $addAttrParamRepository);
     $templateData = str_replace('$ADD_ATTR_PARAM$', $fields, $templateData);
 
-    $fields = implode(''.infy_nl_tab(1, 4), $addAttrInitRepository);
+    $fields = implode('' . infy_nl_tab(1, 4), $addAttrInitRepository);
     $templateData = str_replace('$ADD_ATTR_INIT$', $fields, $templateData);
 
     return $templateData;
-
 }
