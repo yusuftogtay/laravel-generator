@@ -1,0 +1,5 @@
+[
+  'data' => '$FIELD_TITLE$',
+  'title' => __('models/$MODEL_NAME_SNAKE$.fields.$FIELD_NAME$'),
+  $SEARCHABLE$$ORDRERABLE$$EXPORTABLE$$PRINTABLE$
+]

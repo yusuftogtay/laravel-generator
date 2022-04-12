@@ -9,10 +9,11 @@ use InfyOm\Generator\Utils\GeneratorFieldsInputUtil;
 
 class HTMLFieldGenerator
 {
-    public static function generateHTML(GeneratorField $field, $templateType)
+    public static function generateHTML(GeneratorField $field, $templateType, $localized = false)
     {
         $fieldTemplate = '';
 
+        $localized = ($localized) ? '_locale' : '';
         switch ($field->htmlType) {
             case 'text':
             case 'textarea':
@@ -20,17 +21,17 @@ class HTMLFieldGenerator
             case 'file':
             case 'email':
             case 'password':
-                $fieldTemplate = get_template('scaffold.fields.' . $field->htmlType, $templateType);
+                $fieldTemplate = get_template('scaffold.fields.' . $field->htmlType . $localized, $templateType);
                 break;
             case 'number':
-                $fieldTemplate = get_template('scaffold.fields.' . $field->htmlType, $templateType);
+                $fieldTemplate = get_template('scaffold.fields.' . $field->htmlType . $localized, $templateType);
                 break;
             case 'select':
             case 'enum':
                 if ($field->dbInput === 'hidden,mtm') {
-                    $fieldTemplate = get_template('scaffold.fields.selects', $templateType);
+                    $fieldTemplate = get_template('scaffold.fields.selects' . $localized, $templateType);
                 } else {
-                    $fieldTemplate = get_template('scaffold.fields.select', $templateType);
+                    $fieldTemplate = get_template('scaffold.fields.select' . $localized, $templateType);
                 }
                 if (Str::startsWith($field->htmlValues[0], '$')) {
                     $fieldTemplate = str_replace(
@@ -54,7 +55,7 @@ class HTMLFieldGenerator
                 }
                 break;
             case 'checkbox':
-                $fieldTemplate = get_template('scaffold.fields.checkbox', $templateType);
+                $fieldTemplate = get_template('scaffold.fields.checkbox'. $localized, $templateType);
                 if (count($field->htmlValues) > 0) {
                     $checkboxValue = $field->htmlValues[0];
                 } else {
@@ -63,8 +64,8 @@ class HTMLFieldGenerator
                 $fieldTemplate = str_replace('$CHECKBOX_VALUE$', $checkboxValue, $fieldTemplate);
                 break;
             case 'radio':
-                $fieldTemplate = get_template('scaffold.fields.radio_group', $templateType);
-                $radioTemplate = get_template('scaffold.fields.radio', $templateType);
+                $fieldTemplate = get_template('scaffold.fields.radio_group' . $localized, $templateType);
+                $radioTemplate = get_template('scaffold.fields.radio' . $localized, $templateType);
 
                 $radioLabels = GeneratorFieldsInputUtil::prepareKeyValueArrFromLabelValueStr($field->htmlValues);
 
@@ -77,7 +78,7 @@ class HTMLFieldGenerator
                 $fieldTemplate = str_replace('$RADIO_BUTTONS$', implode("\n", $radioButtons), $fieldTemplate);
                 break;
             case 'boolean':
-                $fieldTemplate = get_template('scaffold.fields.boolean', $templateType);
+                $fieldTemplate = get_template('scaffold.fields.boolean' . $localized, $templateType);
                 break;
         }
 
@@ -148,7 +149,7 @@ class HTMLFieldGenerator
                 foreach ($radioLabels as $label => $value) {
                     $radioButtonTemplate = str_replace('$LABEL$', $label, $radioTemplate);
                     $radioButtonTemplate = str_replace('$VALUE$', $value, $radioButtonTemplate);
-                    $radioButtonTemplate = str_replace('$FIELD_VALUE$', in_array($value,$field->validations)? '1': 'null', $radioButtonTemplate);
+                    $radioButtonTemplate = str_replace('$FIELD_VALUE$', in_array($value, $field->validations) ? '1' : 'null', $radioButtonTemplate);
                     $radioButtons[] = $radioButtonTemplate;
                 }
                 $fieldTemplate = str_replace('$RADIO_BUTTONS$', implode("\n", $radioButtons), $fieldTemplate);

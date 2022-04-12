@@ -43,8 +43,18 @@ class ControllerGenerator extends BaseGenerator
         $selectsUpdateFields = [];
         $needRepositoy = [];
         $relations = '';
+
+        if ($this->commandData->getOption('repositoryPattern')) {
+            $templateName = 'datatable_controller';
+        } else {
+            $templateName = 'datatable_controller';
+        }
+
+        if ($this->commandData->isLocalizedTemplates()) {
+            $templateName .= '_locale';
+        }
         if ($this->commandData->getAddOn('datatables')) {
-            $templateData = get_template('scaffold.controller.datatable_controller', 'laravel-generator');
+            $templateData = get_template('scaffold.controller.' . $templateName, 'laravel-generator');
             $mediaFieldTemplate = get_template('scaffold.controller.upload_field', $this->templateType);
             $removeMediaTemplate = get_template('scaffold.controller.remove_media', $this->templateType);
             $selectFieldTemplate = get_template('scaffold.controller.select_relations', $this->templateType);
@@ -58,7 +68,7 @@ class ControllerGenerator extends BaseGenerator
                     continue;
                 }
                 if ($field->htmlType === 'file') {
-                    if(!in_array('upload', $needRepositoy)){
+                    if (!in_array('upload', $needRepositoy)) {
                         $needRepositoy[] = 'upload';
                     }
                     $mediaFields[] = $fieldTemplate = fill_template_with_field_data(
@@ -68,7 +78,7 @@ class ControllerGenerator extends BaseGenerator
                         $field
                     );
                 } elseif ($field->htmlType === 'select' && $field->title) {
-                    if(!in_array($field->title, $needRepositoy)) {
+                    if (!in_array($field->title, $needRepositoy)) {
                         $needRepositoy[] = $field->title;
                     }
                     $selectFields[] = fill_template([
@@ -80,7 +90,7 @@ class ControllerGenerator extends BaseGenerator
                     $relations .= get_relation($field, 'view');
 
                     /*Multiple select generation*/
-                    if($field->dbInput === 'hidden,mtm'){
+                    if ($field->dbInput === 'hidden,mtm') {
 
                         $selectedAddFields[] = fill_template([
                             '$RELATION_MODEL_PLURAL$' => $field->name
@@ -94,13 +104,22 @@ class ControllerGenerator extends BaseGenerator
                             '$RELATION_MODEL_PLURAL$' => $field->name,
                         ], $selectsUpdateFieldTemplate);
 
-                        $relations .= get_send_data($field->name.'Selected','$'.$field->name.'Selected');
+                        $relations .= get_send_data($field->name . 'Selected', '$' . $field->name . 'Selected');
                     }
                 }
             }
+
             $this->generateDataTable();
         } else {
-            $templateData = get_template('scaffold.controller.controller', 'laravel-generator');
+            if ($this->commandData->getOption('repositoryPattern')) {
+                $templateName = 'controller';
+            } else {
+                $templateName = 'controller';
+            }
+            if ($this->commandData->isLocalizedTemplates()) {
+                $templateName .= '_locale';
+            }
+            $templateData = get_template('scaffold.controller.' . $templateName, 'laravel-generator');
             $paginate = $this->commandData->getOption('paginate');
 
             if ($paginate) {
@@ -143,7 +162,11 @@ class ControllerGenerator extends BaseGenerator
 
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
-        $headerFieldTemplate = get_template('scaffold.views.datatable_column', $this->templateType);
+        $templateName = 'datatable_column';
+        if ($this->commandData->isLocalizedTemplates()) {
+            $templateName .= '_locale';
+        }
+        $headerFieldTemplate = get_template('scaffold.views.' . $templateName, $this->templateType);
         $mediaFieldTemplate = get_template('scaffold.views.media_column', $this->templateType);
         $dateFieldTemplate = get_template('scaffold.views.date_column', $this->templateType);
         $booleanFieldTemplate = get_template('scaffold.views.boolean_column', $this->templateType);
@@ -163,6 +186,11 @@ class ControllerGenerator extends BaseGenerator
             if (!$field->inIndex) {
                 continue;
             }
+
+            if ($this->commandData->isLocalizedTemplates() && !$field->isSearchable) {
+                $headerFieldTemplate = str_replace('$SEARCHABLE$', ",'searchable' => false", $headerFieldTemplate);
+            }
+
             if ($field->htmlType === 'file') {
                 $mediaFields[] = $fieldTemplate = fill_template_with_field_data(
                     $this->commandData->dynamicVars,
@@ -179,7 +207,7 @@ class ControllerGenerator extends BaseGenerator
                     $field
                 );
                 $rawColumn = $rawColumn . ",'" . $field->name . "'";
-            }else if( $field->htmlType === 'boolean'){
+            } else if ($field->htmlType === 'boolean') {
                 $booleanFields[] = $fieldTemplate = fill_template_with_field_data(
                     $this->commandData->dynamicVars,
                     $this->commandData->fieldNamesMapping,
@@ -188,9 +216,20 @@ class ControllerGenerator extends BaseGenerator
                 );
                 $rawColumn = $rawColumn . ",'" . $field->name . "'";
             }
+
+            if ($field->isSearchable) {
+                $dataTableColumns[] = $fieldTemplate;
+            } else {
+                if ($this->commandData->isLocalizedTemplates()) {
+                    $dataTableColumns[] = $fieldTemplate;
+                } else {
+                    $dataTableColumns[] = "'".$field->name."' => ['searchable' => false]";
+                }
+            }
+            
             if ($field->htmlType === 'select') {
                 /*Multiple select generation*/
-                if($field->dbInput === 'hidden,mtm'){
+                if ($field->dbInput === 'hidden,mtm') {
                     $this->commandData->fieldNamesMapping['$FIELD_TITLE$'] = 'name';
                     $selectsFieldsStr .= fill_template([
                         '$RELATION_MODEL_PLURAL$' => $field->name,
@@ -206,7 +245,7 @@ class ControllerGenerator extends BaseGenerator
                     );
 
                     $rawColumn = $rawColumn . ",'" . $field->name . "'";
-                }else{
+                } else {
                     $this->commandData->fieldNamesMapping['$FIELD_TITLE$'] = 'title';
                     $relations .= get_relation($field);
                 }
@@ -217,7 +256,6 @@ class ControllerGenerator extends BaseGenerator
                     $headerFieldTemplate,
                     $field
                 );
-
             } else {
                 $this->commandData->fieldNamesMapping['$FIELD_TITLE$'] = 'name';
                 $headerFields[] = $fieldTemplate = fill_template_with_field_data(
@@ -227,7 +265,6 @@ class ControllerGenerator extends BaseGenerator
                     $field
                 );
             }
-
         }
 
         $path = $this->commandData->config->pathDataTables;

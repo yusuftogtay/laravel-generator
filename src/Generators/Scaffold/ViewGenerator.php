@@ -106,7 +106,13 @@ class ViewGenerator extends BaseGenerator
 
     private function generateDataTableActions()
     {
-        $templateData = get_template('scaffold.views.datatables_actions', $this->templateType);
+        $templateName = 'datatables_actions';
+
+        if ($this->commandData->isLocalizedTemplates()) {
+            $templateName .= '_locale';
+        }
+
+        $templateData = get_template('scaffold.views.' . $templateName, $this->templateType);
 
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
@@ -117,7 +123,13 @@ class ViewGenerator extends BaseGenerator
 
     private function generateBladeTableBody()
     {
-        $templateData = get_template('scaffold.views.blade_table_body', $this->templateType);
+        $templateName = 'blade_table_body';
+
+        if ($this->commandData->isLocalizedTemplates()) {
+            $templateName .= '_locale';
+        }
+
+        $templateData = get_template('scaffold.views.' . $templateName, $this->templateType);
 
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
@@ -147,7 +159,15 @@ class ViewGenerator extends BaseGenerator
 
     private function generateTableHeaderFields()
     {
-        $headerFieldTemplate = get_template('scaffold.views.table_header', $this->templateType);
+        $templateName = 'table_header';
+
+        $localized = false;
+        if ($this->commandData->isLocalizedTemplates()) {
+            $templateName .= '_locale';
+            $localized = true;
+        }
+
+        $headerFieldTemplate = get_template('scaffold.views.' . $templateName, $this->templateType);
 
         $headerFields = [];
 
@@ -155,12 +175,24 @@ class ViewGenerator extends BaseGenerator
             if (!$field->inIndex) {
                 continue;
             }
-            $headerFields[] = $fieldTemplate = fill_template_with_field_data(
-                $this->commandData->dynamicVars,
-                $this->commandData->fieldNamesMapping,
-                $headerFieldTemplate,
-                $field
-            );
+
+            if ($localized) {
+                $preFilledHeaderFieldTemplate = str_replace('$FIELD_NAME$', $field->name, $headerFieldTemplate);
+
+                $headerFields[] = $fieldTemplate = fill_template_with_field_data_locale(
+                    $this->commandData->dynamicVars,
+                    $this->commandData->fieldNamesMapping,
+                    $preFilledHeaderFieldTemplate,
+                    $field
+                );
+            } else {
+                $headerFields[] = $fieldTemplate = fill_template_with_field_data(
+                    $this->commandData->dynamicVars,
+                    $this->commandData->fieldNamesMapping,
+                    $headerFieldTemplate,
+                    $field
+                );
+            }
         }
 
         return implode(infy_nl_tab(1, 2), $headerFields);
@@ -168,7 +200,13 @@ class ViewGenerator extends BaseGenerator
 
     private function generateIndex()
     {
-        $templateData = get_template('scaffold.views.index', $this->templateType);
+        $templateName = 'index';
+
+        if ($this->commandData->isLocalizedTemplates()) {
+            $templateName .= '_locale';
+        }
+
+        $templateData = get_template('scaffold.views.' . $templateName, $this->templateType);
 
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
@@ -212,32 +250,34 @@ class ViewGenerator extends BaseGenerator
         $this->langManager->fillKeys('lang', $this->getLangArray());
     }
 
-    private function getTransArray($string = ''){
+    private function getTransArray($string = '')
+    {
         $result = [];
-        foreach ($this->langManager->languages() as $codelang){
+        foreach ($this->langManager->languages() as $codelang) {
             $result[$codelang] = $string;
         }
         return $result;
     }
 
-    private function getLangArray(){
+    private function getLangArray()
+    {
         $mSnake = $this->commandData->config->mSnake;
         $lang = [
             $mSnake => $this->getTransArray($this->commandData->config->mHuman),
-            $mSnake."_plural" => $this->getTransArray($this->commandData->config->mHumanPlural),
-            $mSnake."_desc" => $this->getTransArray($this->commandData->config->mHumanPlural.' Management'),
-            $mSnake."_edit" => $this->getTransArray('Edit '.$this->commandData->config->mHuman),
-            $mSnake."_table" => $this->getTransArray($this->commandData->config->mHumanPlural.' List'),
-            $mSnake."_create" => $this->getTransArray('Create '.$this->commandData->config->mHuman),
+            $mSnake . "_plural" => $this->getTransArray($this->commandData->config->mHumanPlural),
+            $mSnake . "_desc" => $this->getTransArray($this->commandData->config->mHumanPlural . ' Management'),
+            $mSnake . "_edit" => $this->getTransArray('Edit ' . $this->commandData->config->mHuman),
+            $mSnake . "_table" => $this->getTransArray($this->commandData->config->mHumanPlural . ' List'),
+            $mSnake . "_create" => $this->getTransArray('Create ' . $this->commandData->config->mHuman),
         ];
         foreach ($this->commandData->fields as $field) {
-            $title = preg_replace('/-|_/',' ',Str::title($field->name));
-            if($field->inIndex || $field->inForm){
-                $lang[$mSnake.'_'.$field->name] = $this->getTransArray($title);
+            $title = preg_replace('/-|_/', ' ', Str::title($field->name));
+            if ($field->inIndex || $field->inForm) {
+                $lang[$mSnake . '_' . $field->name] = $this->getTransArray($title);
             }
-            if($field->inForm){
-                $lang[$mSnake.'_'.$field->name.'_help'] = $this->getTransArray('Insert '.$title);
-                $lang[$mSnake.'_'.$field->name.'_placeholder'] = $this->getTransArray('Insert '.$title);
+            if ($field->inForm) {
+                $lang[$mSnake . '_' . $field->name . '_help'] = $this->getTransArray('Insert ' . $title);
+                $lang[$mSnake . '_' . $field->name . '_placeholder'] = $this->getTransArray('Insert ' . $title);
             }
         }
         return $lang;
@@ -273,7 +313,15 @@ class ViewGenerator extends BaseGenerator
             }
         }
 
-        $templateData = get_template('scaffold.views.fields', $this->templateType);
+        $templateName = 'fields';
+
+        $localized = false;
+        if ($this->commandData->isLocalizedTemplates()) {
+            $templateName .= '_locale';
+            $localized = true;
+        }
+
+        $templateData = get_template('scaffold.views.' . $templateName, $this->templateType);
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
         $htmlFieldsString = implode("\n\n", $this->htmlFields);
@@ -286,7 +334,13 @@ class ViewGenerator extends BaseGenerator
 
     private function generateCreate()
     {
-        $templateData = get_template('scaffold.views.create', $this->templateType);
+        $templateName = 'create';
+
+        if ($this->commandData->isLocalizedTemplates()) {
+            $templateName .= '_locale';
+        }
+
+        $templateData = get_template('scaffold.views.' . $templateName, $this->templateType);
 
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
@@ -296,7 +350,13 @@ class ViewGenerator extends BaseGenerator
 
     private function generateUpdate()
     {
-        $templateData = get_template('scaffold.views.edit', $this->templateType);
+        $templateName = 'edit';
+
+        if ($this->commandData->isLocalizedTemplates()) {
+            $templateName .= '_locale';
+        }
+
+        $templateData = get_template('scaffold.views.' . $templateName, $this->templateType);
 
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
@@ -306,13 +366,21 @@ class ViewGenerator extends BaseGenerator
 
     private function generateShowFields()
     {
-        $fieldTemplate = get_template('scaffold.views.show_field', $this->templateType);
+        $templateName = 'show_field';
+        if ($this->commandData->isLocalizedTemplates()) {
+            $templateName .= '_locale';
+        }
+
+        $fieldTemplate = get_template('scaffold.views.' . $templateName, $this->templateType);
 
         $fieldsStr = '';
 
         foreach ($this->commandData->fields as $field) {
-            $singleFieldStr = str_replace('$FIELD_NAME_TITLE$', Str::title(str_replace('_', ' ', $field->name)),
-                $fieldTemplate);
+            $singleFieldStr = str_replace(
+                '$FIELD_NAME_TITLE$',
+                Str::title(str_replace('_', ' ', $field->name)),
+                $fieldTemplate
+            );
             $singleFieldStr = str_replace('$FIELD_NAME$', $field->name, $singleFieldStr);
             $singleFieldStr = fill_template($this->commandData->dynamicVars, $singleFieldStr);
 
@@ -325,7 +393,13 @@ class ViewGenerator extends BaseGenerator
 
     private function generateShow()
     {
-        $templateData = get_template('scaffold.views.show', $this->templateType);
+        $templateName = 'show';
+
+        if ($this->commandData->isLocalizedTemplates()) {
+            $templateName .= '_locale';
+        }
+
+        $templateData = get_template('scaffold.views.' . $templateName, $this->templateType);
 
         $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
@@ -360,8 +434,8 @@ class ViewGenerator extends BaseGenerator
     public function generateCustomField($fields)
     {
         $this->htmlFields = [];
-//        $this->commandData = new CommandData($this->commandData, CommandData::$COMMAND_TYPE_API_SCAFFOLD);
-//        $this->commandData->commandType = CommandData::$COMMAND_TYPE_API_SCAFFOLD;
+        //        $this->commandData = new CommandData($this->commandData, CommandData::$COMMAND_TYPE_API_SCAFFOLD);
+        //        $this->commandData->commandType = CommandData::$COMMAND_TYPE_API_SCAFFOLD;
         $startSeparator = '<div class="d-flex flex-column col-sm-12 col-md-6">';
         $endSeparator = '</div>';
 
@@ -388,16 +462,16 @@ class ViewGenerator extends BaseGenerator
             }
         }
 
-//        $templateData = get_template('scaffold.views.fields', $this->templateType);
-//        $templateData = fill_template($this->commandData->dynamicVars, $templateData);
+        //        $templateData = get_template('scaffold.views.fields', $this->templateType);
+        //        $templateData = fill_template($this->commandData->dynamicVars, $templateData);
 
         $htmlFieldsString = implode("\n\n", $this->htmlFields);
         $htmlFieldsString = $startSeparator . "\n" . $htmlFieldsString . "\n" . $endSeparator;
 
         return $htmlFieldsString;
 
-//        $templateData = str_replace('$FIELDS$', $htmlFieldsString, $templateData);
-//        FileUtil::createFile($this->path, 'fields.blade.php', $templateData);
-//        $this->commandData->commandInfo('field.blade.php created');
+        //        $templateData = str_replace('$FIELDS$', $htmlFieldsString, $templateData);
+        //        FileUtil::createFile($this->path, 'fields.blade.php', $templateData);
+        //        $this->commandData->commandInfo('field.blade.php created');
     }
 }

@@ -25,11 +25,12 @@ class $MODEL_NAME$APIController extends AppBaseController
     $DOC_INDEX$
     public function index(Request $request)
     {
-        $$MODEL_NAME_PLURAL_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
-        );
+        try{
+            $this->$MODEL_NAME_CAMEL$Repository->pushCriteria(new RequestCriteria($request));
+            $this->$MODEL_NAME_CAMEL$Repository->pushCriteria(new LimitOffsetCriteria($request));
+        } catch (RepositoryException $e) {
+            return $this->sendError($e->getMessage());
+        }
 
         return $this->sendResponse(
             $MODEL_NAME$Resource::collection($$MODEL_NAME_PLURAL_CAMEL$),
