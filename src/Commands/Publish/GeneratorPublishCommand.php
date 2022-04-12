@@ -5,6 +5,7 @@ namespace InfyOm\Generator\Commands\Publish;
 use InfyOm\Generator\Utils\FileUtil;
 use Symfony\Component\Console\Input\InputOption;
 
+
 class GeneratorPublishCommand extends PublishBaseCommand
 {
     /**
@@ -100,6 +101,29 @@ class GeneratorPublishCommand extends PublishBaseCommand
         $this->publishDirectory($localesDir, resource_path('lang'), 'lang', true);
 
         $this->comment('Locale files published');
+    }
+
+    /**
+     * @param $sourceDir
+     * @param $destinationDir
+     * @param $dirName
+     * @param bool $force
+     *
+     * @return bool|void
+     */
+    public function publishDirectory($sourceDir, $destinationDir, $dirName, $force = false)
+    {
+        if (file_exists($destinationDir) && !$force && !$this->confirmOverwrite($destinationDir)) {
+            return;
+        }
+
+        File::makeDirectory($destinationDir, 493, true, true);
+        File::copyDirectory($sourceDir, $destinationDir);
+
+        $this->comment($dirName . ' published');
+        $this->info($destinationDir);
+
+        return true;
     }
 
     /**
