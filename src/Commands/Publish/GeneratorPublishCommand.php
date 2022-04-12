@@ -4,7 +4,6 @@ namespace InfyOm\Generator\Commands\Publish;
 
 use InfyOm\Generator\Utils\FileUtil;
 use Symfony\Component\Console\Input\InputOption;
-use InfyOm\Generator\Commands\Publish\PublishBaseCommand;
 
 class GeneratorPublishCommand extends PublishBaseCommand
 {
