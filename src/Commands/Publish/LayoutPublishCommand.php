@@ -3,6 +3,8 @@
 namespace InfyOm\Generator\Commands\Publish;
 
 use InfyOm\Generator\Utils\FileUtil;
+use Symfony\Component\Console\Input\InputOption;
+use InfyOm\Generator\Commands\Publish\PublishBaseCommand;
 
 class LayoutPublishCommand extends PublishBaseCommand
 {
@@ -39,22 +41,26 @@ class LayoutPublishCommand extends PublishBaseCommand
 
         $this->createDirectories($viewsPath);
 
-        $files = $this->getViews();
+        if ($this->option('localized')) {
+            $files = $this->getLocaleViews();
+        } else {
+            $files = $this->getViews();
+        }
 
         foreach ($files as $stub => $blade) {
-            $sourceFile = get_template_file_path('scaffold/'.$stub, $templateType);
-            $destinationFile = $viewsPath.$blade;
+            $sourceFile = get_template_file_path('scaffold/' . $stub, $templateType);
+            $destinationFile = $viewsPath . $blade;
             $this->publishFile($sourceFile, $destinationFile, $blade);
         }
     }
 
     private function createDirectories($viewsPath)
     {
-        FileUtil::createDirectoryIfNotExist($viewsPath.'layouts');
-        FileUtil::createDirectoryIfNotExist($viewsPath.'auth');
+        FileUtil::createDirectoryIfNotExist($viewsPath . 'layouts');
+        FileUtil::createDirectoryIfNotExist($viewsPath . 'auth');
 
-        FileUtil::createDirectoryIfNotExist($viewsPath.'auth/passwords');
-        FileUtil::createDirectoryIfNotExist($viewsPath.'auth/emails');
+        FileUtil::createDirectoryIfNotExist($viewsPath . 'auth/passwords');
+        FileUtil::createDirectoryIfNotExist($viewsPath . 'auth/emails');
     }
 
     private function getViews()
@@ -87,7 +93,7 @@ class LayoutPublishCommand extends PublishBaseCommand
 
         $routesTemplate = get_template('routes.auth', 'laravel-generator');
 
-        $routeContents .= "\n\n".$routesTemplate;
+        $routeContents .= "\n\n" . $routesTemplate;
 
         file_put_contents($path, $routeContents);
         $this->comment("\nRoutes added");
@@ -103,7 +109,7 @@ class LayoutPublishCommand extends PublishBaseCommand
 
         $fileName = 'HomeController.php';
 
-        if (file_exists($controllerPath.$fileName) && !$this->confirmOverwrite($fileName)) {
+        if (file_exists($controllerPath . $fileName) && !$this->confirmOverwrite($fileName)) {
             return;
         }
 
@@ -123,12 +129,14 @@ class LayoutPublishCommand extends PublishBaseCommand
     {
         $templateData = str_replace(
             '$NAMESPACE_CONTROLLER$',
-            config('infyom.laravel_generator.namespace.controller'), $templateData
+            config('infyom.laravel_generator.namespace.controller'),
+            $templateData
         );
 
         $templateData = str_replace(
             '$NAMESPACE_REQUEST$',
-            config('infyom.laravel_generator.namespace.request'), $templateData
+            config('infyom.laravel_generator.namespace.request'),
+            $templateData
         );
 
         return $templateData;
@@ -141,7 +149,9 @@ class LayoutPublishCommand extends PublishBaseCommand
      */
     public function getOptions()
     {
-        return [];
+        return [
+            ['localized', null, InputOption::VALUE_NONE, 'Localize files.'],
+        ];
     }
 
     /**

@@ -29,6 +29,13 @@ class GeneratorPublishCommand extends PublishBaseCommand
     {
         $this->publishTestCases();
         $this->publishBaseController();
+        $repositoryPattern = config('infyom.laravel_generator.options.repository_pattern', true);
+        if ($repositoryPattern) {
+            $this->publishBaseRepository();
+        }
+        if ($this->option('localized')) {
+            $this->publishLocaleFiles();
+        }
     }
 
     /**
@@ -85,6 +92,15 @@ class GeneratorPublishCommand extends PublishBaseCommand
         $this->info('AppBaseController created');
     }
 
+    private function publishLocaleFiles()
+    {
+        $localesDir = __DIR__.'/../../../locale/';
+
+        $this->publishDirectory($localesDir, resource_path('lang'), 'lang', true);
+
+        $this->comment('Locale files published');
+    }
+
     /**
      * Get the console command options.
      *
@@ -92,7 +108,7 @@ class GeneratorPublishCommand extends PublishBaseCommand
      */
     public function getOptions()
     {
-        return [];
+        return array_merge(parent::getOptions(), []);
     }
 
     /**

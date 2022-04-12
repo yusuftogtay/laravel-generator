@@ -42,15 +42,32 @@ class CommandData
         return self::$instance;
     }
 
+    public function getTemplatesManager()
+    {
+        return $this->templateManager;
+    }
+
+    public function isLocalizedTemplates()
+    {
+        return $this->templateManager->isUsingLocale();
+    }
+
     /**
      * @param Command $commandObj
      * @param string  $commandType
      *
      * @return CommandData
      */
-    public function __construct(Command $commandObj, $commandType)
+    public function __construct(Command $commandObj, $commandType, TemplatesManager $templatesManager = null)
     {
         $this->commandObj = $commandObj;
+
+        if (is_null($templatesManager)) {
+            $this->templateManager = app(TemplatesManager::class);
+        } else {
+            $this->templateManager = $templatesManager;
+        }
+        
         $this->commandType = $commandType;
 
         $this->fieldNamesMapping = [
@@ -205,7 +222,7 @@ class CommandData
                     $filePath = base_path($fieldsFileValue);
                 } else {
                     $schemaFileDirector = config('infyom.laravel_generator.path.schema_files');
-                    $filePath = $schemaFileDirector.$fieldsFileValue;
+                    $filePath = $schemaFileDirector . $fieldsFileValue;
                 }
 
                 if (!file_exists($filePath)) {

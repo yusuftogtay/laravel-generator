@@ -77,6 +77,7 @@ class GeneratorConfig
         'datatables',
         'views',
         'relations',
+        'localized',
         'media',
         'migrate',
     ];
@@ -113,17 +114,17 @@ class GeneratorConfig
         $prefix = $this->prefixes['ns'];
 
         if (!empty($prefix)) {
-            $prefix = '\\'.$prefix;
+            $prefix = '\\' . $prefix;
         }
 
         $this->nsApp = $commandData->commandObj->getLaravel()->getNamespace();
         $this->nsApp = substr($this->nsApp, 0, strlen($this->nsApp) - 1);
-        $this->nsRepository = config('infyom.laravel_generator.namespace.repository', 'App\Repositories').$prefix;
-        $this->nsModel = config('infyom.laravel_generator.namespace.model', 'App\Models').$prefix;
+        $this->nsRepository = config('infyom.laravel_generator.namespace.repository', 'App\Repositories') . $prefix;
+        $this->nsModel = config('infyom.laravel_generator.namespace.model', 'App\Models') . $prefix;
         if (config('infyom.laravel_generator.ignore_model_prefix', false)) {
             $this->nsModel = config('infyom.laravel_generator.namespace.model', 'App\Models');
         }
-        $this->nsDataTables = config('infyom.laravel_generator.namespace.datatables', 'App\DataTables').$prefix;
+        $this->nsDataTables = config('infyom.laravel_generator.namespace.datatables', 'App\DataTables') . $prefix;
         $this->nsModelExtend = config(
             'infyom.laravel_generator.model_extend_class',
             'Illuminate\Database\Eloquent\Model'
@@ -132,13 +133,13 @@ class GeneratorConfig
         $this->nsApiController = config(
             'infyom.laravel_generator.namespace.api_controller',
             'App\Http\Controllers\API'
-        ).$prefix;
-        $this->nsApiRequest = config('infyom.laravel_generator.namespace.api_request', 'App\Http\Requests\API').$prefix;
+        ) . $prefix;
+        $this->nsApiRequest = config('infyom.laravel_generator.namespace.api_request', 'App\Http\Requests\API') . $prefix;
 
-        $this->nsRequest = config('infyom.laravel_generator.namespace.request', 'App\Http\Requests').$prefix;
+        $this->nsRequest = config('infyom.laravel_generator.namespace.request', 'App\Http\Requests') . $prefix;
         $this->nsRequestBase = config('infyom.laravel_generator.namespace.request', 'App\Http\Requests');
         $this->nsBaseController = config('infyom.laravel_generator.namespace.controller', 'App\Http\Controllers');
-        $this->nsController = config('infyom.laravel_generator.namespace.controller', 'App\Http\Controllers').$prefix;
+        $this->nsController = config('infyom.laravel_generator.namespace.controller', 'App\Http\Controllers') . $prefix;
     }
 
     public function loadPaths()
@@ -158,28 +159,28 @@ class GeneratorConfig
         $this->pathRepository = config(
             'infyom.laravel_generator.path.repository',
             app_path('Repositories/')
-        ).$prefix;
+        ) . $prefix;
 
-        $this->pathFactory = config('infyom.laravel_generator.path.factory', database_path('factories/')).$prefix;
+        $this->pathFactory = config('infyom.laravel_generator.path.factory', database_path('factories/')) . $prefix;
 
-        $this->pathSeeder = config('infyom.laravel_generator.path.seeder', database_path('seeders/')).$prefix;
+        $this->pathSeeder = config('infyom.laravel_generator.path.seeder', database_path('seeders/')) . $prefix;
 
-        $this->pathModel = config('infyom.laravel_generator.path.model', app_path('Models/')).$prefix;
+        $this->pathModel = config('infyom.laravel_generator.path.model', app_path('Models/')) . $prefix;
         if (config('infyom.laravel_generator.ignore_model_prefix', false)) {
             $this->pathModel = config('infyom.laravel_generator.path.model', app_path('Models/'));
         }
 
-        $this->pathDataTables = config('infyom.laravel_generator.path.datatables', app_path('DataTables/')).$prefix;
+        $this->pathDataTables = config('infyom.laravel_generator.path.datatables', app_path('DataTables/')) . $prefix;
 
         $this->pathApiController = config(
             'infyom.laravel_generator.path.api_controller',
             app_path('Http/Controllers/API/')
-        ).$prefix;
+        ) . $prefix;
 
         $this->pathApiRequest = config(
             'infyom.laravel_generator.path.api_request',
             app_path('Http/Requests/API/')
-        ).$prefix;
+        ) . $prefix;
 
         $this->pathApiRoutes = config('infyom.laravel_generator.path.api_routes', app_path('Http/api_routes.php'));
 
@@ -190,9 +191,9 @@ class GeneratorConfig
         $this->pathController = config(
             'infyom.laravel_generator.path.controller',
             app_path('Http/Controllers/')
-        ).$prefix;
+        ) . $prefix;
 
-        $this->pathRequest = config('infyom.laravel_generator.path.request', app_path('Http/Requests/')).$prefix;
+        $this->pathRequest = config('infyom.laravel_generator.path.request', app_path('Http/Requests/')) . $prefix;
 
         $this->pathRoutes = config('infyom.laravel_generator.path.routes', app_path('Http/routes.php'));
 
@@ -201,11 +202,11 @@ class GeneratorConfig
         $this->pathViews = config(
             'infyom.laravel_generator.path.views',
             base_path('resources/views/')
-        ).$viewPrefix.$this->mSnakePlural.'/';
+        ) . $viewPrefix . $this->mSnakePlural . '/';
 
         $this->modelJsPath = config(
-                'infyom.laravel_generator.path.modelsJs',
-                base_path('resources/assets/js/models/')
+            'infyom.laravel_generator.path.modelsJs',
+            base_path('resources/assets/js/models/')
         );
     }
 
@@ -240,24 +241,24 @@ class GeneratorConfig
         $commandData->addDynamicVariable('$MODEL_NAME_PLURAL_SLASH$', $this->mSlashPlural);
         $commandData->addDynamicVariable('$MODEL_NAME_HUMAN$', $this->mHuman);
         $commandData->addDynamicVariable('$MODEL_NAME_PLURAL_HUMAN$', $this->mHumanPlural);
-        $commandData->addDynamicVariable('$RANDOM_VARIABLE$', 'var'.time().'ble');
+        $commandData->addDynamicVariable('$RANDOM_VARIABLE$', 'var' . time() . 'ble');
 
         if (!empty($this->prefixes['route'])) {
-            $commandData->addDynamicVariable('$ROUTE_NAMED_PREFIX$', $this->prefixes['route'].'.');
-            $commandData->addDynamicVariable('$ROUTE_PREFIX$', str_replace('.', '/', $this->prefixes['route']).'/');
+            $commandData->addDynamicVariable('$ROUTE_NAMED_PREFIX$', $this->prefixes['route'] . '.');
+            $commandData->addDynamicVariable('$ROUTE_PREFIX$', str_replace('.', '/', $this->prefixes['route']) . '/');
         } else {
             $commandData->addDynamicVariable('$ROUTE_PREFIX$', '');
             $commandData->addDynamicVariable('$ROUTE_NAMED_PREFIX$', '');
         }
 
         if (!empty($this->prefixes['ns'])) {
-            $commandData->addDynamicVariable('$PATH_PREFIX$', $this->prefixes['ns'].'\\');
+            $commandData->addDynamicVariable('$PATH_PREFIX$', $this->prefixes['ns'] . '\\');
         } else {
             $commandData->addDynamicVariable('$PATH_PREFIX$', '');
         }
 
         if (!empty($this->prefixes['view'])) {
-            $commandData->addDynamicVariable('$VIEW_PREFIX$', str_replace('/', '.', $this->prefixes['view']).'.');
+            $commandData->addDynamicVariable('$VIEW_PREFIX$', str_replace('/', '.', $this->prefixes['view']) . '.');
         } else {
             $commandData->addDynamicVariable('$VIEW_PREFIX$', '');
         }
@@ -327,12 +328,20 @@ class GeneratorConfig
             }
         }
 
+        if (empty($this->options['localized'])) {
+            $this->options['localized'] = config('infyom.laravel_generator.options.localized', false);
+        }
+
+        if ($this->options['localized']) {
+            $commandData->getTemplatesManager()->setUseLocale(true);
+        }
+
         $this->options['softDelete'] = config('infyom.laravel_generator.options.softDelete', false);
         if (!empty($this->options['skip'])) {
             $skips = array_map('trim', explode(',', $this->options['skip']));
-            if(in_array('*',$skips)){
-                $this->options['skip'] = ['model','controllers','views','routes','requests','repository','menu','requests'];
-            }else{
+            if (in_array('*', $skips)) {
+                $this->options['skip'] = ['model', 'controllers', 'views', 'routes', 'requests', 'repository', 'menu', 'requests'];
+            } else {
                 $this->options['skip'] = $skips;
             }
         }
@@ -370,7 +379,7 @@ class GeneratorConfig
         $routePrefix = '';
 
         foreach ($this->prefixes['route'] as $singlePrefix) {
-            $routePrefix .= Str::camel($singlePrefix).'.';
+            $routePrefix .= Str::camel($singlePrefix) . '.';
         }
 
         if (!empty($routePrefix)) {
@@ -382,7 +391,7 @@ class GeneratorConfig
         $nsPrefix = '';
 
         foreach ($this->prefixes['path'] as $singlePrefix) {
-            $nsPrefix .= Str::title($singlePrefix).'\\';
+            $nsPrefix .= Str::title($singlePrefix) . '\\';
         }
 
         if (!empty($nsPrefix)) {
@@ -394,7 +403,7 @@ class GeneratorConfig
         $pathPrefix = '';
 
         foreach ($this->prefixes['path'] as $singlePrefix) {
-            $pathPrefix .= Str::title($singlePrefix).'/';
+            $pathPrefix .= Str::title($singlePrefix) . '/';
         }
 
         if (!empty($pathPrefix)) {
@@ -406,7 +415,7 @@ class GeneratorConfig
         $viewPrefix = '';
 
         foreach ($this->prefixes['view'] as $singlePrefix) {
-            $viewPrefix .= Str::camel($singlePrefix).'/';
+            $viewPrefix .= Str::camel($singlePrefix) . '/';
         }
 
         if (!empty($viewPrefix)) {
@@ -418,7 +427,7 @@ class GeneratorConfig
         $publicPrefix = '';
 
         foreach ($this->prefixes['public'] as $singlePrefix) {
-            $publicPrefix .= Str::camel($singlePrefix).'/';
+            $publicPrefix .= Str::camel($singlePrefix) . '/';
         }
 
         if (!empty($publicPrefix)) {
