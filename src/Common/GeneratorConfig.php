@@ -13,6 +13,9 @@ class GeneratorConfig
     public $nsDataTables;
     public $nsModelExtend;
 
+    public $nsSeeder;
+    public $nsFactory;
+
     public $nsApiController;
     public $nsApiResource;
     public $nsApiRequest;
