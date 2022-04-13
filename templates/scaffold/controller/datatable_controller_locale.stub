@@ -22,7 +22,7 @@ class $MODEL_NAME$Controller extends AppBaseController
     /** @var $MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repository*/
     private $$MODEL_NAME_CAMEL$Repository;
 
-    public function __construct($MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repository, $ADD_ATTR_PARAM$)
+    public function __construct($MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repository $ADD_ATTR_PARAM$)
     {
         parent::__construct();
         $this->$MODEL_NAME_CAMEL$Repository = $$MODEL_NAME_CAMEL$Repository;

@@ -18,8 +18,16 @@ class $MODEL_NAME$DataTable extends DataTable
     public function dataTable($query)
     {
         $dataTable = new EloquentDataTable($query);
+        $columns = array_column($this->getColumns(), 'data');
+        $dataTable = $dataTable
+            $MEDIA_COLUMNS$
+            $DATE_COLUMNS$
+            $SELECTS_COLUMNS$
+            $BOOLEAN_COLUMNS$
+            ->addColumn('action', '$VIEW_PREFIX$$MODEL_NAME_PLURAL_SNAKE$.datatables_actions')
+            ->rawColumns(array_merge($columns, ['action']));
 
-        return $dataTable->addColumn('action', '$VIEW_PREFIX$$MODEL_NAME_PLURAL_SNAKE$.datatables_actions');
+        return $dataTable;
     }
 
     /**
