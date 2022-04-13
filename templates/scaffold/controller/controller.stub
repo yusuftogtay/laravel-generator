@@ -2,24 +2,27 @@
 
 namespace $NAMESPACE_CONTROLLER$;
 
+use Response;
+use Laracasts\Flash\Flash;
 use $NAMESPACE_REQUEST$\Create$MODEL_NAME$Request;
 use $NAMESPACE_REQUEST$\Update$MODEL_NAME$Request;
 use $NAMESPACE_REPOSITORY$\$MODEL_NAME$Repository;
-use $NAMESPACE_APP$\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Flash;
+$ADD_USED$
+use Exception;
+use $NAMESPACE_APP$\Http\Controllers\AppBaseController;
 use Prettus\Repository\Criteria\RequestCriteria;
-use Response;
+use Prettus\Repository\Exceptions\RepositoryException;
 
-class $MODEL_NAME$Controller extends Controller
+class $MODEL_NAME$Controller extends AppBaseController
 {
     /** @var  $MODEL_NAME$Repository */
     private $$MODEL_NAME_CAMEL$Repository;
 
-    public function __construct($MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repo)
+    public function __construct($MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repository,  $ADD_ATTR_PARAM$)
     {
         parent::__construct();
-        $this->$MODEL_NAME_CAMEL$Repository = $$MODEL_NAME_CAMEL$Repo;
+        $this->$MODEL_NAME_CAMEL$Repository = $$MODEL_NAME_CAMEL$Repository;
+        $ADD_ATTR_INIT$
     }
 
     /**
@@ -44,6 +47,9 @@ class $MODEL_NAME$Controller extends Controller
      */
     public function create()
     {
+        $SELECT_RELATIONS$
+        $SELECTED_RELATIONS_ADD$
+
         return view('$VIEW_PREFIX$$MODEL_NAME_PLURAL_SNAKE$.create');
     }
 
@@ -58,7 +64,12 @@ class $MODEL_NAME$Controller extends Controller
     {
         $input = $request->all();
 
-        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->create($input);
+        try {
+            $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->create($input);
+            $MEDIA_COLUMNS$
+        } catch (ValidatorException $e) {
+            Flash::error($e->getMessage());
+        }
 
         Flash::success('$MODEL_NAME_HUMAN$ saved successfully.');
 
@@ -74,7 +85,7 @@ class $MODEL_NAME$Controller extends Controller
      */
     public function show($id)
     {
-        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->findWithoutFail($id);
+        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
 
         if (empty($$MODEL_NAME_CAMEL$)) {
             Flash::error('$MODEL_NAME_HUMAN$ not found');
@@ -94,7 +105,9 @@ class $MODEL_NAME$Controller extends Controller
      */
     public function edit($id)
     {
-        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->findWithoutFail($id);
+        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
+        $SELECT_RELATIONS$
+        $SELECTED_RELATIONS_EDIT$
 
         if (empty($$MODEL_NAME_CAMEL$)) {
             Flash::error('$MODEL_NAME_HUMAN$ not found');
@@ -115,7 +128,7 @@ class $MODEL_NAME$Controller extends Controller
      */
     public function update($id, Update$MODEL_NAME$Request $request)
     {
-        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->findWithoutFail($id);
+        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
 
         if (empty($$MODEL_NAME_CAMEL$)) {
             Flash::error('$MODEL_NAME_HUMAN$ not found');
@@ -123,7 +136,15 @@ class $MODEL_NAME$Controller extends Controller
             return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
         }
 
-        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->update($request->all(), $id);
+        $input = $request->all();
+
+        try {
+            $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->update($request->all(), $id);
+            $SELECTS_RELATIONS_UPDATE$
+            $MEDIA_COLUMNS$
+        } catch (ValidatorException $e) {
+            Flash::error($e->getMessage());
+        }
 
         Flash::success('$MODEL_NAME_HUMAN$ updated successfully.');
 
@@ -139,7 +160,7 @@ class $MODEL_NAME$Controller extends Controller
      */
     public function destroy($id)
     {
-        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->findWithoutFail($id);
+        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
 
         if (empty($$MODEL_NAME_CAMEL$)) {
             Flash::error('$MODEL_NAME_HUMAN$ not found');
@@ -153,4 +174,6 @@ class $MODEL_NAME$Controller extends Controller
 
         return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
     }
+
+    $REMOVE_MEDIA_FUNCTION$
 }

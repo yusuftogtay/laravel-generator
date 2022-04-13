@@ -17,19 +17,22 @@ class $MODEL_NAME$APIController extends AppBaseController
     /** @var  $MODEL_NAME$Repository */
     private $$MODEL_NAME_CAMEL$Repository;
 
-    public function __construct($MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repo)
+    public function __construct($MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repository)
     {
-        $this->$MODEL_NAME_CAMEL$Repository = $$MODEL_NAME_CAMEL$Repo;
+        $this->$MODEL_NAME_CAMEL$Repository = $$MODEL_NAME_CAMEL$Repository;
     }
 
     $DOC_INDEX$
     public function index(Request $request)
     {
-        $$MODEL_NAME_PLURAL_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
-        );
+        try{
+            $this->$MODEL_NAME_CAMEL$Repository->pushCriteria(new RequestCriteria($request));
+            $this->$MODEL_NAME_CAMEL$Repository->pushCriteria(new LimitOffsetCriteria($request));
+        } catch (RepositoryException $e) {
+            return $this->sendError($e->getMessage());
+        }
+
+        $$MODEL_NAME_PLURAL_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->all();
 
         return $this->sendResponse(
             $MODEL_NAME$Resource::collection($$MODEL_NAME_PLURAL_CAMEL$),

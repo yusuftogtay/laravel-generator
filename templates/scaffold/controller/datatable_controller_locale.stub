@@ -3,7 +3,7 @@
 namespace $NAMESPACE_CONTROLLER$;
 
 
-use App\Http\Requests;
+use Response;
 use Laracasts\Flash\Flash;
 use $NAMESPACE_DATATABLES$\$MODEL_NAME$DataTable;
 use $NAMESPACE_REQUEST$;
@@ -11,16 +11,16 @@ use $NAMESPACE_REQUEST$\Create$MODEL_NAME$Request;
 use $NAMESPACE_REQUEST$\Update$MODEL_NAME$Request;
 use $NAMESPACE_REPOSITORY$\$MODEL_NAME$Repository;
 use $NAMESPACE_APP$\Http\Controllers\AppBaseController;
-use Response;
+
 
 class $MODEL_NAME$Controller extends AppBaseController
 {
     /** @var $MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repository*/
     private $$MODEL_NAME_CAMEL$Repository;
 
-    public function __construct($MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repo)
+    public function __construct($MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repository)
     {
-        $this->$MODEL_NAME_CAMEL$Repository = $$MODEL_NAME_CAMEL$Repo;
+        $this->$MODEL_NAME_CAMEL$Repository = $$MODEL_NAME_CAMEL$Repository;
     }
 
     /**

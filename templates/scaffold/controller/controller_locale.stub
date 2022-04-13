@@ -2,23 +2,29 @@
 
 namespace $NAMESPACE_CONTROLLER$;
 
-use App\Http\Requests;
+use Response;
 use Laracasts\Flash\Flash;
 use $NAMESPACE_REQUEST$\Create$MODEL_NAME$Request;
 use $NAMESPACE_REQUEST$\Update$MODEL_NAME$Request;
 use $NAMESPACE_REPOSITORY$\$MODEL_NAME$Repository;
+$ADD_USED$
+use Exception;
 use $NAMESPACE_APP$\Http\Controllers\AppBaseController;
-use Illuminate\Http\Request;
-use Response;
+use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Repository\Exceptions\RepositoryException;
 
 class $MODEL_NAME$Controller extends AppBaseController
 {
     /** @var $MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repository*/
     private $$MODEL_NAME_CAMEL$Repository;
 
-    public function __construct($MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repo)
+    $ADD_ATTR$
+
+    public function __construct($MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repository, $ADD_ATTR_PARAM$)
     {
-        $this->$MODEL_NAME_CAMEL$Repository = $$MODEL_NAME_CAMEL$Repo;
+        parent::__construct();
+        $this->$MODEL_NAME_CAMEL$Repository = $$MODEL_NAME_CAMEL$Repository;
+        $ADD_ATTR_INIT$
     }
 
     /**
@@ -30,6 +36,7 @@ class $MODEL_NAME$Controller extends AppBaseController
      */
     public function index(Request $request)
     {
+        $this->$MODEL_NAME_CAMEL$Repository->pushCriteria(new RequestCriteria($request));
         $$MODEL_NAME_PLURAL_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->$RENDER_TYPE$;
 
         return view('$VIEW_PREFIX$$MODEL_NAME_PLURAL_SNAKE$.index')
@@ -43,6 +50,9 @@ class $MODEL_NAME$Controller extends AppBaseController
      */
     public function create()
     {
+        $SELECT_RELATIONS$
+        $SELECTED_RELATIONS_ADD$
+
         return view('$VIEW_PREFIX$$MODEL_NAME_PLURAL_SNAKE$.create');
     }
 
@@ -57,7 +67,12 @@ class $MODEL_NAME$Controller extends AppBaseController
     {
         $input = $request->all();
 
-        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->create($input);
+        try {
+            $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->create($input);
+            $MEDIA_COLUMNS$
+        } catch (ValidatorException $e) {
+            Flash::error($e->getMessage());
+        }
 
         Flash::success(__('messages.saved', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
 
@@ -94,6 +109,8 @@ class $MODEL_NAME$Controller extends AppBaseController
     public function edit($id)
     {
         $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
+        $SELECT_RELATIONS$
+        $SELECTED_RELATIONS_EDIT$
 
         if (empty($$MODEL_NAME_CAMEL$)) {
             Flash::error(__('messages.not_found', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
@@ -122,7 +139,15 @@ class $MODEL_NAME$Controller extends AppBaseController
             return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
         }
 
-        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->update($request->all(), $id);
+        $input = $request->all();
+
+        try {
+            $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->update($request->all(), $id);
+            $SELECTS_RELATIONS_UPDATE$
+            $MEDIA_COLUMNS$
+        } catch (ValidatorException $e) {
+            Flash::error($e->getMessage());
+        }
 
         Flash::success(__('messages.updated', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
 
@@ -154,4 +179,6 @@ class $MODEL_NAME$Controller extends AppBaseController
 
         return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
     }
+
+    $REMOVE_MEDIA_FUNCTION$
 }

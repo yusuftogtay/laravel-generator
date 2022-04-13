@@ -6,10 +6,9 @@ use $NAMESPACE_DATATABLES$\$MODEL_NAME$DataTable;
 use $NAMESPACE_REQUEST$\Create$MODEL_NAME$Request;
 use $NAMESPACE_REQUEST$\Update$MODEL_NAME$Request;
 use $NAMESPACE_REPOSITORY$\$MODEL_NAME$Repository;
-use App\Repositories\CustomFieldRepository;
 $ADD_USED$
 use Exception;
-use Flash;
+use Laracasts\Flash\Flash;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
@@ -19,23 +18,18 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\View\View;
 use Prettus\Validator\Exceptions\ValidatorException;
+use Prettus\Repository\Exceptions\RepositoryException;
 
 class $MODEL_NAME$Controller extends Controller
 {
     /** @var  $MODEL_NAME$Repository */
     private $$MODEL_NAME_CAMEL$Repository;
 
-    /**
-     * @var CustomFieldRepository
-     */
-    private $customFieldRepository;
-
     $ADD_ATTR$
 
-    public function __construct($MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repo, CustomFieldRepository $customFieldRepo $ADD_ATTR_PARAM$)
+    public function __construct($MODEL_NAME$Repository $$MODEL_NAME_CAMEL$Repository, $ADD_ATTR_PARAM$)
     {
-        $this->$MODEL_NAME_CAMEL$Repository = $$MODEL_NAME_CAMEL$Repo;
-        $this->customFieldRepository = $customFieldRepo;
+        $this->$MODEL_NAME_CAMEL$Repository = $$MODEL_NAME_CAMEL$Repository;
         $ADD_ATTR_INIT$
     }
 
@@ -95,7 +89,7 @@ class $MODEL_NAME$Controller extends Controller
      */
     public function show($id)
     {
-        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->findWithoutFail($id);
+        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
 
         if (empty($$MODEL_NAME_CAMEL$)) {
             Flash::error(__('messages.not_found', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
@@ -113,7 +107,7 @@ class $MODEL_NAME$Controller extends Controller
      */
     public function edit($id)
     {
-        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->findWithoutFail($id);
+        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
         $SELECT_RELATIONS$
         $SELECTED_RELATIONS_EDIT$
 
@@ -136,7 +130,7 @@ class $MODEL_NAME$Controller extends Controller
      */
     public function update($id, Update$MODEL_NAME$Request $request)
     {
-        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->findWithoutFail($id);
+        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
 
         if (empty($$MODEL_NAME_CAMEL$)) {
             Flash::error(__('messages.not_found', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
@@ -165,7 +159,7 @@ class $MODEL_NAME$Controller extends Controller
      */
     public function destroy($id)
     {
-        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->findWithoutFail($id);
+        $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
 
         if (empty($$MODEL_NAME_CAMEL$)) {
             Flash::error(__('messages.not_found', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
