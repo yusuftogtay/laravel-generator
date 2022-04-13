@@ -217,15 +217,15 @@ class ControllerGenerator extends BaseGenerator
                 $rawColumn = $rawColumn . ",'" . $field->name . "'";
             }
 
-            if ($field->isSearchable) {
-                $dataTableColumns[] = $fieldTemplate;
-            } else {
-                if ($this->commandData->isLocalizedTemplates()) {
-                    $dataTableColumns[] = $fieldTemplate;
-                } else {
-                    $dataTableColumns[] = "'".$field->name."' => ['searchable' => false]";
-                }
-            }
+            // if ($field->isSearchable) {
+            //     $dataTableColumns[] = $fieldTemplate;
+            // } else {
+            //     if ($this->commandData->isLocalizedTemplates()) {
+            //         $dataTableColumns[] = $fieldTemplate;
+            //     } else {
+            //         $dataTableColumns[] = "'".$field->name."' => ['searchable' => false]";
+            //     }
+            // }
             
             if ($field->htmlType === 'select') {
                 /*Multiple select generation*/
