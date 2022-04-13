@@ -33,7 +33,7 @@ class ViewGenerator extends BaseGenerator
     {
         $this->commandData = $commandData;
         $this->path = $commandData->config->pathViews;
-        $this->langManager = new Manager(new Filesystem(), config('langman.path'), []);
+        //$this->langManager = new Manager(new Filesystem(), config('langman.path'), []);
         $this->templateType = config('infyom.laravel_generator.templates', 'adminlte-templates');
     }
 
