@@ -7,6 +7,7 @@ use App\Models\CustomField;
 use Yajra\DataTables\DataTableAbstract;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder;
+use Yajra\DataTables\Html\Column;
 use Yajra\DataTables\Services\DataTable;
 use Barryvdh\DomPDF\Facade as PDF;
 

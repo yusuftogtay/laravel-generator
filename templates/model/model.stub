@@ -57,7 +57,6 @@ class $MODEL_NAME$ extends Model implements HasMedia
      * @var array
      */
     protected $appends = [
-        'custom_fields',
         $APPENDS$
     ];
 
