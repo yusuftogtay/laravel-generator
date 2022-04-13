@@ -247,7 +247,7 @@ class ViewGenerator extends BaseGenerator
      */
     private function generateLanguage()
     {
-        $this->langManager->fillKeys('lang', $this->getLangArray());
+        //$this->langManager->fillKeys('lang', $this->getLangArray());
     }
 
     private function getTransArray($string = '')
