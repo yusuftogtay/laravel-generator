@@ -156,15 +156,15 @@ class BaseCommand extends Command
 
         if ($runMigration) {
             if ($this->commandData->config->forceMigrate) {
-                $this->call('migrate');
+                //$this->call('migrate');
             } elseif (!$this->commandData->getOption('fromTable') and !$this->isSkip('migration')) {
                 if ($this->commandData->getOption('jsonFromGUI')) {
                     $this->call('migrate');
                 } elseif ($this->commandData->getOption('migrate')) {
-                    $this->call('migrate');
+                    //$this->call('migrate');
                 } else {
                     if ($this->confirm("\nDo you want to migrate database? [y|N]", false)) {
-                        $this->call('migrate');
+                        //$this->call('migrate');
                     }
                 }
             }
