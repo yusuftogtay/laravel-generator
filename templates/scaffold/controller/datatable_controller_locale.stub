@@ -14,6 +14,7 @@ $ADD_USED$
 use Exception;
 use $NAMESPACE_APP$\Http\Controllers\AppBaseController;
 use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Validator\Exceptions\ValidatorException;
 use Prettus\Repository\Exceptions\RepositoryException;
 
 class $MODEL_NAME$Controller extends AppBaseController
@@ -37,9 +38,6 @@ class $MODEL_NAME$Controller extends AppBaseController
      */
     public function index($MODEL_NAME$DataTable $$MODEL_NAME_CAMEL$DataTable)
     {
-        $this->$MODEL_NAME_CAMEL$Repository->pushCriteria(new RequestCriteria($request));
-        $$MODEL_NAME_PLURAL_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->$RENDER_TYPE$;
-
         return $$MODEL_NAME_CAMEL$DataTable->render('$VIEW_PREFIX$$MODEL_NAME_PLURAL_SNAKE$.index');
     }
 

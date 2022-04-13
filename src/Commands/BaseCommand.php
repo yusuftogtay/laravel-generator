@@ -2,6 +2,7 @@
 
 namespace InfyOm\Generator\Commands;
 
+use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use InfyOm\Generator\Common\CommandData;
 use InfyOm\Generator\Generators\API\APIControllerGenerator;
