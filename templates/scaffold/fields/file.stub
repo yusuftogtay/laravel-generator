@@ -1,13 +1,13 @@
 <!-- $FIELD_NAME_TITLE$ Field -->
 <div class="form-group align-items-start d-flex flex-column flex-md-row">
-  {!! Form::label('$FIELD_NAME$', __('models/$MODEL_NAME_PLURAL_CAMEL$.fields.$FIELD_NAME$'), ['class' => 'col-md-3 control-label text-md-right mx-1']) !!}
+  {!! Form::label('$FIELD_NAME$', __('$MODEL_NAME_PLURAL_CAMEL$.fields.$FIELD_NAME$'), ['class' => 'col-md-3 control-label text-md-right mx-1']) !!}
   <div class="col-md-9">
     <div style="width: 100%" class="dropzone $FIELD_NAME$" id="$FIELD_NAME$" data-field="$FIELD_NAME$">
       <input type="hidden" name="$FIELD_NAME$">
     </div>
     <a href="#loadMediaModal" data-dropzone="$FIELD_NAME$" data-toggle="modal" data-target="#mediaModal" class="btn btn-outline-{{setting('theme_color','primary')}} btn-sm float-right mt-1">{{ trans('lang.media_select')}}</a>
     <div class="form-text text-muted w-50">
-      {{ __('models/$MODEL_NAME_PLURAL_CAMEL$.help.$FIELD_NAME$') }}
+      {{ __('$MODEL_NAME_PLURAL_CAMEL$.help.$FIELD_NAME$') }}
     </div>
   </div>
 </div>

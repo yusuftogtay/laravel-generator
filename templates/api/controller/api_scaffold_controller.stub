@@ -33,7 +33,7 @@ class $MODEL_NAME$APIController extends AppBaseController
 
         return $this->sendResponse(
             $MODEL_NAME$Resource::collection($$MODEL_NAME_PLURAL_CAMEL$),
-            __('messages.retrieved', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.plural')])
+            __('messages.retrieved', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.plural')])
         );
     }
 
@@ -46,7 +46,7 @@ class $MODEL_NAME$APIController extends AppBaseController
 
         return $this->sendResponse(
             new $MODEL_NAME$Resource($$MODEL_NAME_CAMEL$),
-            __('messages.saved', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')])
+            __('messages.saved', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')])
         );
     }
 
@@ -58,13 +58,13 @@ class $MODEL_NAME$APIController extends AppBaseController
 
         if (empty($$MODEL_NAME_CAMEL$)) {
             return $this->sendError(
-                __('messages.not_found', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')])
+                __('messages.not_found', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')])
             );
         }
 
         return $this->sendResponse(
             new $MODEL_NAME$Resource($$MODEL_NAME_CAMEL$),
-            __('messages.retrieved', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')])
+            __('messages.retrieved', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')])
         );
     }
 
@@ -78,7 +78,7 @@ class $MODEL_NAME$APIController extends AppBaseController
 
         if (empty($$MODEL_NAME_CAMEL$)) {
             return $this->sendError(
-                __('messages.not_found', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')])
+                __('messages.not_found', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')])
             );
         }
 
@@ -86,7 +86,7 @@ class $MODEL_NAME$APIController extends AppBaseController
 
         return $this->sendResponse(
             new $MODEL_NAME$Resource($$MODEL_NAME_CAMEL$),
-            __('messages.updated', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')])
+            __('messages.updated', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')])
         );
     }
 
@@ -98,7 +98,7 @@ class $MODEL_NAME$APIController extends AppBaseController
 
         if (empty($$MODEL_NAME_CAMEL$)) {
             return $this->sendError(
-                __('messages.not_found', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')])
+                __('messages.not_found', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')])
             );
         }
 
@@ -106,7 +106,7 @@ class $MODEL_NAME$APIController extends AppBaseController
 
         return $this->sendResponse(
             $id,
-            __('messages.deleted', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')])
+            __('messages.deleted', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')])
         );
     }
 }
