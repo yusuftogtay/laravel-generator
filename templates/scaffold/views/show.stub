@@ -6,12 +6,12 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-md-6">
-        <h1 class="m-0 text-dark">{{ __('models/$MODEL_NAME_SNAKE$.plural') }} <small>{{ __('models/$MODEL_NAME_SNAKE$.desc') }}</small></h1>
+        <h1 class="m-0 text-dark">{{ __('$MODEL_NAME_SNAKE$.plural') }} <small>{{ __('$MODEL_NAME_SNAKE$.desc') }}</small></h1>
       </div><!-- /.col -->
       <div class="col-md-6">
         <ol class="breadcrumb bg-white float-sm-right rounded-pill px-4 py-2 d-none d-md-flex">
           <li class="breadcrumb-item"><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> {{ __('curd.dashboard') }}</a></li>
-          <li class="breadcrumb-itema ctive"><a href="{!! route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index') !!}">{{ __('models/$MODEL_NAME_SNAKE$.plural') }}</a>
+          <li class="breadcrumb-itema ctive"><a href="{!! route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index') !!}">{{ __('$MODEL_NAME_SNAKE$.plural') }}</a>
           </li>
         </ol>
       </div><!-- /.col -->
@@ -24,10 +24,10 @@
     <div class="card-header">
       <ul class="nav nav-tabs align-items-end card-header-tabs w-100">
         <li class="nav-item">
-          <a class="nav-link" href="{!! route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index') !!}"><i class="fa fa-list mr-2"></i>{{ __('models/$MODEL_NAME_SNAKE$.table') }}</a>
+          <a class="nav-link" href="{!! route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index') !!}"><i class="fa fa-list mr-2"></i>{{ __('$MODEL_NAME_SNAKE$.table') }}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="{!! route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.create') !!}"><i class="fas fa-plus mr-2"></i>{{__('models/$MODEL_NAME_SNAKE$.create')}}</a>
+          <a class="nav-link active" href="{!! route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.create') !!}"><i class="fas fa-plus mr-2"></i>{{__('$MODEL_NAME_SNAKE$.create')}}</a>
         </li>
       </ul>
     </div>
