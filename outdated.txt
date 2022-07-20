@@ -1,0 +1,3 @@
+illuminate/support v5.5.44 ~ v9.20.0 The Illuminate Support package.
+mockery/mockery    0.9.11  ~ 1.5.0   Mockery is a simple yet flexible PHP mock object framework for use in unit testing with PHPUnit, PHPSpe...
+phpunit/phpunit    5.2.7   ~ 9.5.21  The PHP Unit Testing framework.
