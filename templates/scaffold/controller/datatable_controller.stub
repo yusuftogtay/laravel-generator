@@ -53,7 +53,7 @@ class $MODEL_NAME$Controller extends Controller
     {
         $SELECT_RELATIONS$
         $SELECTED_RELATIONS_ADD$
-        
+
         return view('$VIEW_PREFIX$$MODEL_NAME_PLURAL_SNAKE$.create')$SELECT_RELATIONS_PARAM$;
     }
 
@@ -67,7 +67,7 @@ class $MODEL_NAME$Controller extends Controller
     public function store(Create$MODEL_NAME$Request $request)
     {
         $input = $request->all();
-        
+
         try {
             $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->create($input);
             $MEDIA_COLUMNS$
@@ -75,7 +75,7 @@ class $MODEL_NAME$Controller extends Controller
             Flash::error($e->getMessage());
         }
 
-        Flash::success(__('messages.saved', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
+        Flash::success(__('messages.saved', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')]));
 
         return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
     }
@@ -92,7 +92,7 @@ class $MODEL_NAME$Controller extends Controller
         $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
 
         if (empty($$MODEL_NAME_CAMEL$)) {
-            Flash::error(__('messages.not_found', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
+            Flash::error(__('messages.not_found', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')]));
             return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
         }
         return view('$VIEW_PREFIX$$MODEL_NAME_PLURAL_SNAKE$.show')->with('$MODEL_NAME_CAMEL$', $$MODEL_NAME_CAMEL$);
@@ -112,11 +112,11 @@ class $MODEL_NAME$Controller extends Controller
         $SELECTED_RELATIONS_EDIT$
 
         if (empty($$MODEL_NAME_CAMEL$)) {
-            Flash::error(__('messages.not_found', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
+            Flash::error(__('messages.not_found', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')]));
 
             return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
         }
-       
+
         return view('$VIEW_PREFIX$$MODEL_NAME_PLURAL_SNAKE$.edit')->with('$MODEL_NAME_CAMEL$', $$MODEL_NAME_CAMEL$)$SELECT_RELATIONS_PARAM$;
     }
 
@@ -133,7 +133,7 @@ class $MODEL_NAME$Controller extends Controller
         $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
 
         if (empty($$MODEL_NAME_CAMEL$)) {
-            Flash::error(__('messages.not_found', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
+            Flash::error(__('messages.not_found', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')]));
             return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
         }
         $input = $request->all();
@@ -146,7 +146,7 @@ class $MODEL_NAME$Controller extends Controller
             Flash::error($e->getMessage());
         }
 
-        Flash::success(__('messages.updated', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
+        Flash::success(__('messages.updated', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')]));
         return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
     }
 
@@ -162,14 +162,14 @@ class $MODEL_NAME$Controller extends Controller
         $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
 
         if (empty($$MODEL_NAME_CAMEL$)) {
-            Flash::error(__('messages.not_found', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
+            Flash::error(__('messages.not_found', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')]));
 
             return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
         }
 
         $this->$MODEL_NAME_CAMEL$Repository->delete($id);
 
-        Flash::success(__('messages.deleted', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
+        Flash::success(__('messages.deleted', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')]));
         return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
     }
 

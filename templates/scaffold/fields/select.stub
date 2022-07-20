@@ -1,8 +1,8 @@
 <!-- $FIELD_NAME_TITLE$ Field -->
 <div class="form-group align-items-baseline d-flex flex-column flex-md-row">
-  {!! Form::label('$FIELD_NAME$', __('models/$MODEL_NAME_PLURAL_CAMEL$.fields.$FIELD_NAME$'),['class' => 'col-md-3 control-label text-md-right mx-1']) !!}
+  {!! Form::label('$FIELD_NAME$', __('$MODEL_NAME_PLURAL_CAMEL$.fields.$FIELD_NAME$'),['class' => 'col-md-3 control-label text-md-right mx-1']) !!}
   <div class="col-md-9">
     {!! Form::select('$FIELD_NAME$', $INPUT_ARR$, null, ['class' => 'select2 form-control']) !!}
-    <div class="form-text text-muted">{{ __('models/$MODEL_NAME_PLURAL_CAMEL$.help.$FIELD_NAME$') }}</div>
+    <div class="form-text text-muted">{{ __('$MODEL_NAME_PLURAL_CAMEL$.help.$FIELD_NAME$') }}</div>
   </div>
 </div>

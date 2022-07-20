@@ -73,7 +73,7 @@ class $MODEL_NAME$Controller extends AppBaseController
             Flash::error($e->getMessage());
         }
 
-        Flash::success(__('messages.saved', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
+        Flash::success(__('messages.saved', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')]));
 
         return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
     }
@@ -90,7 +90,7 @@ class $MODEL_NAME$Controller extends AppBaseController
         $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
 
         if (empty($$MODEL_NAME_CAMEL$)) {
-            Flash::error(__('messages.not_found', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
+            Flash::error(__('messages.not_found', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')]));
 
             return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
         }
@@ -112,7 +112,7 @@ class $MODEL_NAME$Controller extends AppBaseController
         $SELECTED_RELATIONS_EDIT$
 
         if (empty($$MODEL_NAME_CAMEL$)) {
-            Flash::error(__('messages.not_found', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
+            Flash::error(__('messages.not_found', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')]));
 
             return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
         }
@@ -133,7 +133,7 @@ class $MODEL_NAME$Controller extends AppBaseController
         $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
 
         if (empty($$MODEL_NAME_CAMEL$)) {
-            Flash::error(__('messages.not_found', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
+            Flash::error(__('messages.not_found', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')]));
 
             return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
         }
@@ -148,7 +148,7 @@ class $MODEL_NAME$Controller extends AppBaseController
             Flash::error($e->getMessage());
         }
 
-        Flash::success(__('messages.updated', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
+        Flash::success(__('messages.updated', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')]));
 
         return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
     }
@@ -167,14 +167,14 @@ class $MODEL_NAME$Controller extends AppBaseController
         $$MODEL_NAME_CAMEL$ = $this->$MODEL_NAME_CAMEL$Repository->find($id);
 
         if (empty($$MODEL_NAME_CAMEL$)) {
-            Flash::error(__('messages.not_found', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
+            Flash::error(__('messages.not_found', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')]));
 
             return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
         }
 
         $this->$MODEL_NAME_CAMEL$Repository->delete($id);
 
-        Flash::success(__('messages.deleted', ['model' => __('models/$MODEL_NAME_PLURAL_CAMEL$.singular')]));
+        Flash::success(__('messages.deleted', ['model' => __('$MODEL_NAME_PLURAL_CAMEL$.singular')]));
 
         return redirect(route('$ROUTE_NAMED_PREFIX$$MODEL_NAME_PLURAL_CAMEL$.index'));
     }

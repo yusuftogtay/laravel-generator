@@ -257,7 +257,7 @@ if (!function_exists('fill_field_template_locale')) {
     {
         foreach ($variables as $variable => $key) {
             $value = $field->name;
-            $template = str_replace($variable, "@lang('models/$modelName.fields.$value')", $template);
+            $template = str_replace($variable, "@lang('$modelName.fields.$value')", $template);
         }
 
         return $template;
