@@ -105,9 +105,10 @@ class $MODEL_NAME$DataTable extends DataTable
      * Get filename for export.
      *
      * @return string
+     *
+     *protected function filename()
+     *{
+     *  return '$MODEL_NAME_PLURAL_SNAKE$_datatable_' . time();
+     *}
      */
-    protected function filename()
-    {
-        return '$MODEL_NAME_PLURAL_SNAKE$_datatable_' . time();
-    }
 }
