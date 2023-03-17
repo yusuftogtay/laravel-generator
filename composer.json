@@ -30,10 +30,16 @@
             "email": "yusuf.togtay@gmail.com"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/yusuftogtay/l5-repository.git"
+        }
+    ],
     "require": {
         "php": ">=7.2.0",
-        "illuminate/support": "5.0.* || 5.1.* || 5.2.* || 5.3.* || 5.4.* || 5.5.* || 5.6.* || 5.7.* || 5.8.* || 7.* || 8.* || 9.*",
-        "prettus/l5-repository": "^2.7.9",
+        "illuminate/support": "5.0.* || 5.1.* || 5.2.* || 5.3.* || 5.4.* || 5.5.* || 5.6.* || 5.7.* || 5.8.* || 7.* || 8.* || 9.* || 10.*",
+        "yusuftogtay/l5-repository": "dev-master",
         "laracasts/flash": "~3.2"
     },
     "require-dev": {
