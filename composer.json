@@ -1,6 +1,6 @@
 {
     "name": "yusuftogtay/laravel-generator",
-    "description": "Smarter Vision Generator",
+    "description": "Yusuf Togtay Generator",
     "keywords": [
         "laravel",
         "api",
@@ -48,7 +48,7 @@
     },
     "autoload": {
         "psr-4": {
-            "InfyOm\\Generator\\": "src/"
+            "YusufTogtay\\Generator\\": "src/"
         },
         "files": [
             "src/helpers.php"
@@ -62,7 +62,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "\\InfyOm\\Generator\\InfyOmGeneratorServiceProvider"
+                "\\YusufTogtay\\GeneratorBuilder\\GeneratorBuilderServiceProvider"
             ]
         }
     },
